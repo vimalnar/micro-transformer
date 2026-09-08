@@ -1,0 +1,4 @@
+{"id":"single-location","task":"state_tracking","prompt":"ava move cube two to garden. where cube two?","expected":"garden |"}
+{"id":"updated-location","task":"state_tracking","prompt":"ava move cube two to garden. ava move cube two to hall. where cube two?","expected":"hall |"}
+{"id":"take-without-transfer","task":"ownership","prompt":"ava move cube two to garden. ben take cube two. who has cube two?","expected":"ben |"}
+{"id":"single-colour","task":"property","prompt":"ava move cube two to garden. ava paint cube two red. what colour cube two?","expected":"red |"}

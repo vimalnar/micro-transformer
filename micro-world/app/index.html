@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Micro-World Inspector</title>
+    <link rel="stylesheet" href="/static/viewer.css">
+  </head>
+  <body>
+    <header>
+      <div>
+        <h1>Micro-World Inspector</h1>
+        <p>Deterministic world and forward-facing agent observation</p>
+      </div>
+      <dl class="status" aria-live="polite">
+        <div><dt>Tick</dt><dd id="tick">0</dd></div>
+        <div><dt>Phase</dt><dd id="phase">day</dd></div>
+        <div><dt>Agent</dt><dd id="agent-name">ava</dd></div>
+      </dl>
+    </header>
+
+    <main>
+      <section class="controls" aria-label="Simulation controls">
+        <label>Seed <input id="seed" type="number" value="42"></label>
+        <label>Map
+          <select id="map-name">
+            <option value="physics-lab">Physics lab</option>
+            <option value="procedural">Procedural</option>
+          </select>
+        </label>
+        <label>Agent
+          <select id="agent-select">
+            <option value="ava">Ava</option>
+            <option value="ben">Ben</option>
+          </select>
+        </label>
+        <button id="reset" type="button">Reset</button>
+        <button id="play" type="button">Play</button>
+        <label>Speed
+          <select id="speed">
+            <option value="800">Slow</option>
+            <option value="300" selected>Normal</option>
+            <option value="100">Fast</option>
+          </select>
+        </label>
+        <label class="check-control">
+          <input id="reveal-world" type="checkbox" checked>
+          Reveal debug world
+        </label>
+      </section>
+
+      <section class="views">
+        <figure class="world-figure">
+          <figcaption>World view — only the agent's current field of view is revealed</figcaption>
+          <canvas id="world" width="640" height="640" aria-label="Partially observed world"></canvas>
+        </figure>
+        <figure class="observation-figure">
+          <figcaption>Model input — egocentric 9×9 view</figcaption>
+          <canvas id="observation" width="360" height="360" aria-label="Agent observation"></canvas>
+          <p class="view-note">The agent remains at the bottom-centre; forward is always up.</p>
+        </figure>
+      </section>
+
+      <section class="actions" aria-label="Agent actions">
+        <button data-action="turn-left" type="button">Turn left</button>
+        <button data-action="forward" type="button">Forward</button>
+        <button data-action="turn-right" type="button">Turn right</button>
+        <button data-action="interact" type="button">Interact</button>
+        <button data-action="take" type="button">Take</button>
+        <button data-action="drop" type="button">Drop</button>
+        <button data-action="wait" type="button">Wait</button>
+      </section>
+
+      <section class="inspectors">
+        <article>
+          <h2>Recent events</h2>
+          <ol id="events" reversed></ol>
+        </article>
+        <article>
+          <h2>Replay record</h2>
+          <pre id="replay"></pre>
+        </article>
+      </section>
+    </main>
+
+    <script src="/static/viewer.js?v=2"></script>
+  </body>
+</html>

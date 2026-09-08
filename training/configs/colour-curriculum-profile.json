@@ -1,0 +1,16 @@
+{
+  "statement_only": 2,
+  "state_tracking": 10,
+  "delayed_recall": 7,
+  "ownership": 8,
+  "property": 8,
+  "conditional": 6,
+  "belief": 5,
+  "spatial": 4,
+  "quantifier": 5,
+  "temporal": 4,
+  "communication": 4,
+  "ability": 4,
+  "composition": 3,
+  "colour_grounding": 30
+}
