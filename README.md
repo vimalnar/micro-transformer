@@ -251,3 +251,9 @@ Those reports document particular experiments rather than promises about every n
 run. The value of the baseline is that future architectural changes can be compared
 against the same explicit language, generation contract, environments, and held-out
 evaluation process.
+
+## Licence
+
+Copyright 2026 Vimal Naran. Micro-Transformer is available under the
+[Apache License 2.0](LICENSE). Generated datasets, trained weights, and third-party
+materials may carry their own licence terms when distributed separately.
