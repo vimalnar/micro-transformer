@@ -48,7 +48,7 @@ COLOURS = ("red", "blue", "green", "yellow")
 ATTRIBUTES = ("small", "heavy", "light", "closed", "locked", "hidden", "new", "old", "empty", "full", "visible", "broken")
 CONTAINERS = ("box", "chest")
 NUMBER_TOKENS = ("none", *IDENTIFIERS)
-GENERATOR_VERSION = "4.0.2"
+GENERATOR_VERSION = "4.1.0"
 SCHEMA_VERSION = "micro-transformer-jsonl-v4"
 SPLIT_VERSION = "balanced-entity-matrix-v1"
 
@@ -86,6 +86,11 @@ class Episode:
     variant: str = "legacy"
     task_version: str = "legacy-v3"
     suite: str = "standard"
+    # Structured source retained only while generating counterfactual pairs. It
+    # is deliberately omitted from JSONL records and therefore never reaches
+    # the model.
+    _events: list[list[str]] | None = None
+    _question: list[str] | None = None
 
 
 class World:
@@ -781,6 +786,16 @@ def validate_record(record: dict, expected_id: int | None = None) -> list[str]:
         if record.get("suite") not in {"standard", "challenge"}: issues.append("invalid suite")
     elif not isinstance(record["task"], str) or record["task"] not in BUILDERS:
         issues.append("unknown task")
+    pair_fields = {"pair_id", "pair_member", "pair_relation", "intervention_field", "intervention_role"}
+    present_pair_fields = pair_fields & record.keys()
+    if present_pair_fields and present_pair_fields != pair_fields:
+        issues.append(f"incomplete pair metadata: missing {sorted(pair_fields - present_pair_fields)}")
+    elif present_pair_fields:
+        if not isinstance(record["pair_id"], str) or not record["pair_id"]: issues.append("invalid pair_id")
+        if record["pair_member"] not in {0, 1} or isinstance(record["pair_member"], bool): issues.append("invalid pair_member")
+        if record["pair_relation"] not in {"flip", "invariant"}: issues.append("invalid pair_relation")
+        if record["intervention_role"] not in {"relevant", "irrelevant"}: issues.append("invalid intervention_role")
+        if not isinstance(record["intervention_field"], str) or not record["intervention_field"]: issues.append("invalid intervention_field")
     if not isinstance(record["split"], str) or record["split"] not in {"train", "validation", "test"}: issues.append("unknown split")
     entities = entity_keys(record["tokens"])
     if not isinstance(record["split_key"], str) or record["split_key"] not in entities: issues.append("primary split key is absent from episode tokens")
@@ -888,6 +903,7 @@ def generation_configuration(args, registry, profile):
         "require_full_coverage": args.require_full_coverage,
         "suite": getattr(args, "suite", "standard"),
         "require_capability_coverage": getattr(args, "require_capability_coverage", False),
+        "paired_counterfactual_fraction": getattr(args, "paired_counterfactual_fraction", 0.0),
         "task_modules": {str(path): hashlib.sha256(path.read_bytes()).hexdigest() for path in registry.sources},
         "task_registry": registry.describe(),
         "disjoint_inputs": {str(Path(path).resolve()): file_hash(path) for path in args.disjoint_from},
@@ -989,6 +1005,359 @@ def load_disjoint_fingerprints(paths: Iterable[Path]) -> set[bytes]:
     return values
 
 
+# Flip support is intentionally variant-specific. Invariant pairs are supported
+# for every queried built-in variant because their intervention is a fresh,
+# semantically irrelevant distractor object. Statement-only records have no
+# supervised target, and extension tasks need to provide a future explicit pair
+# contract rather than being mutated heuristically.
+FLIP_PAIR_VARIANTS = {
+    "state_tracking": ("moves", "take_drop", "swap", "containment", "unknown"),
+    "delayed_recall": ("moves", "take_drop", "swap"),
+    "ownership": ("take", "transfers", "drop_retake", "relocate", "unowned"),
+    "property": ("colour", "same_colour", "unknown_colour"),
+    "conditional": ("positive", "negated"),
+    "belief": ("current", "stale", "updated", "unknown"),
+    "spatial": ("behind", "beside", "with", "which"),
+    "quantifier": ("count",),
+    "temporal": ("before", "after", "and", "while", "again", "only", "because"),
+    "communication": ("current", "stale", "updated", "unknown", "explicit"),
+    "ability": ("open",),
+    "composition": ("location", "owner", "colour"),
+}
+
+PAIR_EXCLUSIONS = {
+    "statement_only": "no supervised target exists",
+    "property/attribute": "the language cannot directly clear every positive attribute",
+    "property/negated_attribute": "the language cannot directly clear every positive attribute",
+    "spatial/contains": "negating containment requires an additional removal event",
+    "quantifier/some": "one controlled move cannot guarantee a flip for every sampled set",
+    "quantifier/none": "one controlled move cannot guarantee a flip for every sampled set",
+    "quantifier/all": "one controlled move cannot guarantee a flip for every sampled set",
+    "ability/visible": "visibility polarity requires unequal hide/find event sequences",
+    "extension_tasks": "extensions have no declared structured intervention contract",
+}
+
+
+def rounded_pair_count(total: int, fraction: float) -> int:
+    """Nearest feasible pair count; halves round up and odd totals leave one singleton."""
+    if isinstance(fraction, bool) or not isinstance(fraction, (int, float)) or not 0.0 <= fraction <= 1.0:
+        raise ValueError("--paired-counterfactual-fraction must be between 0.0 and 1.0")
+    return min(total // 2, int(total * float(fraction) / 2.0 + 0.5))
+
+
+def _opaque_pair_id(seed: int, split: str, index: int) -> str:
+    material = f"micro-transformer-pair:{seed}:{split}:{index}".encode()
+    return "pcf-" + hashlib.blake2b(material, digest_size=10).hexdigest()
+
+
+def _render_intervened(base: Episode, events: list[list[str]], question: list[str]) -> Episode:
+    state = ReferenceInterpreter()
+    for event in events:
+        state.execute(event)
+    answer = state.answer(question)
+    tokens = [token for event in events for token in (*event, ".")]
+    tokens.extend([*question, "?", *answer, "|"])
+    return Episode(tokens, answer, base.task, len(events), base.structural_template,
+                   base.split_key, base.variant, base.task_version, base.suite,
+                   [event[:] for event in events], question[:])
+
+
+def _question_object(question: list[str], start: int = 0) -> list[str]:
+    for index in range(start, len(question) - 1):
+        if question[index] in KINDS and question[index + 1] in IDENTIFIERS:
+            return question[index:index + 2]
+    raise ValueError("counterfactual question has no object")
+
+
+def build_counterfactual_pair(registry, ctx: Context, task: str, occurrence: int,
+                              relation: str) -> tuple[Episode, Episode, str, str]:
+    """Build both members from one structured scenario and one controlled field."""
+    base = registry.tasks[task].builder(ctx, occurrence)
+    if base._events is None or base._question is None or not base._question:
+        raise ValueError(f"{task}/{base.variant} has no structured pairing contract")
+    events, question = [event[:] for event in base._events], base._question[:]
+    used = entity_keys(base.tokens)
+
+    if relation == "invariant":
+        excluded_kind = question[1] if question[0] == "count" or question[:2] in (["is", "some"], ["is", "none"], ["is", "all"]) else None
+        candidates = [(key, list(tokens)) for key, tokens in entity_pool(KINDS, ctx.split)
+                      if key not in used and (excluded_kind is None or tokens[0] != excluded_kind)]
+        if not candidates:
+            raise ValueError("no fresh entity is available for an invariant intervention")
+        _, distractor = ctx.rng.choice(candidates)
+        actor = ctx.rng.choice(AGENTS)
+        first, second = ctx.rng.sample(LOCATIONS, 2)
+        position = ctx.rng.randrange(len(events) + 1)
+        left, right = [event[:] for event in events], [event[:] for event in events]
+        left.insert(position, [actor, "move", *distractor, "to", first])
+        right.insert(position, [actor, "move", *distractor, "to", second])
+        field, role = "distractor_location", "irrelevant"
+    else:
+        if base.variant not in FLIP_PAIR_VARIANTS.get(task, ()):
+            raise ValueError(f"{task}/{base.variant} does not support flip interventions")
+        left, right = [event[:] for event in events], [event[:] for event in events]
+        target = _question_object(question) if question[0] != "count" else []
+        actor = ctx.rng.choice(AGENTS)
+        intervention_a: list[str]
+        intervention_b: list[str]
+        field = "target_state"
+        if question[0] == "where" and len(question) == 3:
+            first, second = ctx.rng.sample(LOCATIONS, 2)
+            intervention_a = [actor, "move", *target, "to", first]
+            intervention_b = [actor, "move", *target, "to", second]
+            field = "target_location"
+        elif question[:2] == ["who", "has"]:
+            first, second = ctx.rng.sample(AGENTS, 2)
+            intervention_a, intervention_b = [first, "take", *target], [second, "take", *target]
+            field = "target_owner"
+        elif question[:2] == ["what", "colour"]:
+            first, second = ctx.rng.sample(COLOURS, 2)
+            intervention_a = [actor, "paint", *target, first]
+            intervention_b = [actor, "paint", *target, second]
+            field = "target_colour"
+        elif question[0] == "where" and len(question) == 5:
+            observer, mode = question[1], question[2]
+            first, second = ctx.rng.sample(LOCATIONS, 2)
+            if mode == "believes":
+                mover = ctx.rng.choice([name for name in AGENTS if name != observer])
+                intervention_a = [observer, "sees", mover, "move", *target, "to", first]
+                intervention_b = [observer, "sees", mover, "move", *target, "to", second]
+                field = "observed_location"
+            else:
+                intervention_a = [actor, "tell", observer, *target, "at", first]
+                intervention_b = [actor, "tell", observer, *target, "at", second]
+                field = "communicated_location"
+        elif question[:2] == ["is", *target[:1]] and "same" in question:
+            other = _question_object(question, 3)
+            state = ReferenceInterpreter()
+            for event in events: state.execute(event)
+            colour = state.colours.get(":".join(target)) or ctx.rng.choice(COLOURS)
+            different = ctx.rng.choice([value for value in COLOURS if value != colour])
+            intervention_a = [actor, "paint", *other, colour]
+            intervention_b = [actor, "paint", *other, different]
+            field = "compared_colour"
+        elif question[0] == "does" or question[0] == "which":
+            relation_at = 3 if question[0] == "does" else 4
+            expected_relation = question[relation_at]
+            other = _question_object(question, 3)
+            alternate = ctx.rng.choice([value for value in ("behind", "beside", "with") if value != expected_relation])
+            intervention_a = [*target, expected_relation, *other]
+            intervention_b = [*target, alternate, *other]
+            field = "spatial_relation"
+        elif question[0] == "count":
+            kind, location = question[1], question[3]
+            candidates = [key.split(":") for key in sorted(used) if key.startswith(kind + ":")]
+            target = ctx.rng.choice(candidates)
+            other = ctx.rng.choice([value for value in LOCATIONS if value != location])
+            intervention_a = [actor, "move", *target, "to", location]
+            intervention_b = [actor, "move", *target, "to", other]
+            field = "counted_object_location"
+        elif question[:3] == ["can", question[1], "open"]:
+            intervention_a = [actor, "unlock", *target]
+            intervention_b = [actor, "lock", *target]
+            field = "locked_state"
+        elif question[0] == "is" and question[-1] == "closed":
+            intervention_a = [actor, "close", *target]
+            intervention_b = [actor, "open", *target]
+            field = "closed_state"
+        else:
+            raise ValueError(f"unsupported flip question for {task}/{base.variant}: {question}")
+        # Place the intervention after the last event that can overwrite its
+        # controlled entity, while allowing trailing distractors to remain
+        # after it. This avoids a fixed "last statement is the pair marker"
+        # pattern without weakening the intervention.
+        last_target_event = max(
+            (index for index, event in enumerate(events)
+             if any(event[offset:offset + 2] == target for offset in range(len(event) - 1))),
+            default=len(events) - 1,
+        )
+        position = ctx.rng.randrange(last_target_event + 1, len(events) + 1)
+        left.insert(position, intervention_a); right.insert(position, intervention_b)
+        role = "relevant"
+
+    pair = (_render_intervened(base, left, question), _render_intervened(base, right, question))
+    if relation == "flip" and pair[0].answer_tokens == pair[1].answer_tokens:
+        raise ValueError(f"{task}/{base.variant} flip intervention did not change the answer")
+    if relation == "invariant" and pair[0].answer_tokens != pair[1].answer_tokens:
+        raise ValueError(f"{task}/{base.variant} invariant intervention changed the answer")
+    for episode in pair:
+        validate_tokens(episode.tokens)
+        if derive_answer(episode.tokens) != episode.answer_tokens:
+            raise ValueError("counterfactual answer failed fresh interpreter replay")
+    return pair[0], pair[1], field, role
+
+
+def paired_generation_plan(total: int, fraction: float, seed: int, split: str, registry, profile):
+    pair_count = rounded_pair_count(total, fraction)
+    target_counts = Counter(task_schedule(total, profile, seed))
+    supported_tasks = [task for task in sorted(profile)
+                       if task in FLIP_PAIR_VARIANTS and task in registry.tasks]
+    if pair_count and not supported_tasks:
+        raise ValueError("selected profile has no task variants supporting paired counterfactuals")
+
+    # Allocate pairs within the original whole-dataset task quotas. This keeps
+    # pairing as the only data-mixture intervention instead of also changing
+    # the configured family distribution. A pair consumes two records from its
+    # family, so odd residuals remain ordinary examples.
+    pair_task_counts = Counter()
+    allocation_rng = random.Random(f"micro-transformer-pair-tasks:{seed}:{split}")
+    weighted_tasks = [task for task in task_schedule(total, profile, seed)
+                      if task in supported_tasks]
+    allocation_rng.shuffle(weighted_tasks)
+    for task in weighted_tasks:
+        if sum(pair_task_counts.values()) >= pair_count:
+            break
+        if pair_task_counts[task] < target_counts[task] // 2:
+            pair_task_counts[task] += 1
+    if sum(pair_task_counts.values()) != pair_count:
+        capacity = sum(target_counts[task] // 2 for task in supported_tasks)
+        raise ValueError(
+            f"requested {pair_count} pairs but the selected profile can fit only {capacity} "
+            "without changing its task quotas"
+        )
+
+    plans = []
+    single_occurrences = Counter()
+    single_counts = target_counts.copy()
+    for task, count in pair_task_counts.items():
+        single_counts[task] -= count * 2
+    single_tasks = []
+    for task in task_schedule(total, profile, seed):
+        if single_counts[task] > 0:
+            single_tasks.append(task)
+            single_counts[task] -= 1
+    for task in single_tasks:
+        plans.append({"kind": "single", "task": task, "occurrence": single_occurrences[task]})
+        single_occurrences[task] += 1
+
+    option_rng = random.Random(f"micro-transformer-pair-options:{seed}:{split}")
+    relation_counts = Counter()
+    option_counts = Counter()
+    pair_tasks = [task for task, count in sorted(pair_task_counts.items()) for _ in range(count)]
+    option_rng.shuffle(pair_tasks)
+    for pair_index in range(pair_count):
+        relation = "flip" if pair_index % 2 == 0 else "invariant"
+        task = pair_tasks[pair_index]
+        variants = (FLIP_PAIR_VARIANTS[task] if relation == "flip"
+                    else registry.tasks[task].variants)
+        variant = variants[option_counts[(task, relation)] % len(variants)]
+        variant_index = registry.tasks[task].variants.index(variant)
+        cycle = option_counts[(task, variant)]
+        occurrence = variant_index + cycle * len(registry.tasks[task].variants)
+        option_counts[(task, relation)] += 1
+        option_counts[(task, variant)] += 1; relation_counts[relation] += 1
+        pair_id = _opaque_pair_id(seed, split, pair_index)
+        for member in (0, 1):
+            plans.append({"kind": "pair", "task": task, "occurrence": occurrence,
+                          "relation": relation, "pair_id": pair_id, "pair_member": member,
+                          "pair_index": pair_index})
+
+    shuffle_rng = random.Random(f"micro-transformer-record-order:{seed}:{split}:{fraction:.17g}")
+    shuffle_rng.shuffle(plans)
+    if len(plans) > 2:
+        for index in range(len(plans) - 1):
+            if plans[index].get("pair_id") and plans[index].get("pair_id") == plans[index + 1].get("pair_id"):
+                swap = next((j for j in range(index + 2, len(plans))
+                             if plans[j].get("pair_id") != plans[index].get("pair_id")), None)
+                if swap is not None: plans[index + 1], plans[swap] = plans[swap], plans[index + 1]
+    return plans
+
+
+def _model_input_without_answer(record: dict) -> list[str]:
+    tokens = record["tokens"]
+    if "?" not in tokens:
+        return tokens[:]
+    boundary = tokens.index("?")
+    return tokens[:boundary + 1] + ["|"]
+
+
+def pair_integrity_report(paths: Iterable[Path], requested_fraction: float = 0.0) -> dict[str, object]:
+    groups = {}; paired_targets = Counter(); unpaired_targets = Counter(); issues = []
+    records = []
+    for path in paths:
+        with Path(path).open(encoding="utf-8") as stream:
+            for line_number, line in enumerate(stream, 1):
+                try: record = json.loads(line)
+                except json.JSONDecodeError:
+                    issues.append(f"{path}:{line_number}: invalid JSON in pair validation"); continue
+                if not isinstance(record, dict):
+                    issues.append(f"{path}:{line_number}: non-object record in pair validation"); continue
+                records.append(record)
+    ids = [record.get("id") for record in records]
+    if len(ids) != len(set(ids)): issues.append("record IDs are not unique")
+    adjacency = 0
+    for left, right in zip(records, records[1:]):
+        adjacency += bool(left.get("pair_id") and left.get("pair_id") == right.get("pair_id"))
+    for record in records:
+        answer_tokens = record.get("answer_tokens")
+        if not isinstance(answer_tokens, list) or not all(isinstance(token, str) for token in answer_tokens):
+            issues.append(f"record {record.get('id')}: invalid answer tokens in pair validation"); continue
+        answer = " ".join(answer_tokens) or "<statement>"
+        if "pair_id" in record:
+            groups.setdefault(record["pair_id"], []).append(record); paired_targets[answer] += 1
+        else:
+            unpaired_targets[answer] += 1
+
+    relation_counts = Counter(); family_counts = Counter(); variant_counts = Counter()
+    allowed_differences = {
+        "distractor_location": set(LOCATIONS), "target_location": set(LOCATIONS),
+        "target_owner": set(AGENTS), "target_colour": set(COLOURS),
+        "observed_location": set(LOCATIONS), "communicated_location": set(LOCATIONS),
+        "compared_colour": set(COLOURS), "spatial_relation": {"behind", "beside", "with"},
+        "counted_object_location": set(LOCATIONS), "locked_state": {"lock", "unlock"},
+        "closed_state": {"close", "open"},
+    }
+    for pair_id, members in groups.items():
+        if len(members) != 2:
+            issues.append(f"{pair_id}: expected exactly two records, found {len(members)}"); continue
+        members.sort(key=lambda record: record.get("pair_member", -1))
+        first, second = members
+        if {first.get("pair_member"), second.get("pair_member")} != {0, 1}:
+            issues.append(f"{pair_id}: pair members must be 0 and 1")
+        shared = ("pair_relation", "intervention_field", "intervention_role", "task", "variant", "split")
+        if any(first.get(key) != second.get(key) for key in shared):
+            issues.append(f"{pair_id}: pair metadata differs between members"); continue
+        if not all(isinstance(record.get("tokens"), list) and isinstance(record.get("answer_tokens"), list)
+                   for record in members):
+            issues.append(f"{pair_id}: invalid token fields"); continue
+        relation, field = first.get("pair_relation"), first.get("intervention_field")
+        if relation not in {"flip", "invariant"}:
+            issues.append(f"{pair_id}: invalid relation {relation!r}"); continue
+        expected_role = "relevant" if relation == "flip" else "irrelevant"
+        if first.get("intervention_role") != expected_role:
+            issues.append(f"{pair_id}: intervention role does not match relation")
+        if relation == "flip" and first["answer_tokens"] == second["answer_tokens"]:
+            issues.append(f"{pair_id}: flip targets are identical")
+        if relation == "invariant" and first["answer_tokens"] != second["answer_tokens"]:
+            issues.append(f"{pair_id}: invariant targets differ")
+        left, right = _model_input_without_answer(first), _model_input_without_answer(second)
+        differences = [(a, b) for a, b in zip(left, right) if a != b]
+        if len(left) != len(right) or len(differences) != 1:
+            issues.append(f"{pair_id}: members do not differ in exactly one controlled surface field")
+        elif field not in allowed_differences or not set(differences[0]) <= allowed_differences[field]:
+            issues.append(f"{pair_id}: surface difference does not match {field!r}")
+        relation_counts[relation] += 1; family_counts[first["task"]] += 1
+        variant_counts[f"{first['task']}/{first['variant']}"] += 1
+
+    paired_records = sum(len(members) for members in groups.values())
+    total = len(records)
+    return {
+        "requested_paired_record_fraction": float(requested_fraction),
+        "realized_paired_record_fraction": round(paired_records / total, 12) if total else 0.0,
+        "pair_count": len(groups), "paired_record_count": paired_records,
+        "pair_counts_by_relation": dict(sorted(relation_counts.items())),
+        "pair_counts_by_task": dict(sorted(family_counts.items())),
+        "pair_counts_by_task_variant": dict(sorted(variant_counts.items())),
+        "excluded_families_and_reasons": PAIR_EXCLUSIONS,
+        "target_balance": {"paired": dict(sorted(paired_targets.items())),
+                           "unpaired": dict(sorted(unpaired_targets.items()))},
+        "integrity_passed": not issues, "issues": issues[:100],
+        "adjacent_pair_count": adjacency,
+        "model_input_pair_marker": None,
+        "note": "Pair metadata is excluded from model tokens; integrity includes fresh per-record semantic replay plus an exact one-field member comparison.",
+    }
+
+
 def generate(args: argparse.Namespace) -> dict[str, object]:
     if args.episodes < 1: raise ValueError("--episodes must be at least 1")
     if any(getattr(args, name) < 0 for name in ("shard_size", "max_tokens", "max_duplicate_retries", "min_token_occurrences", "progress_every")):
@@ -998,7 +1367,20 @@ def generate(args: argparse.Namespace) -> dict[str, object]:
     if not isinstance(profile, dict) or not profile or any(not isinstance(v, int) or isinstance(v, bool) or v <= 0 for v in profile.values()):
         raise ValueError("Profiles must map task names to positive integer percentages")
     if set(profile) - registry.tasks.keys(): raise ValueError(f"Unknown tasks: {sorted(set(profile) - registry.tasks.keys())}")
-    planned_tasks = task_schedule(args.episodes, profile, args.seed)
+    paired_fraction = getattr(args, "paired_counterfactual_fraction", 0.0)
+    requested_pairs = rounded_pair_count(args.episodes, paired_fraction)
+    if requested_pairs and args.resume:
+        raise ValueError("--resume is not supported with paired counterfactual generation")
+    if requested_pairs:
+        plans = paired_generation_plan(args.episodes, paired_fraction, args.seed, args.split, registry, profile)
+    else:
+        planned_tasks = task_schedule(args.episodes, profile, args.seed)
+        counts = Counter()
+        plans = []
+        for task in planned_tasks:
+            plans.append({"kind": "single", "task": task, "occurrence": counts[task]})
+            counts[task] += 1
+    planned_tasks = [plan["task"] for plan in plans]
     target_counts = dict(Counter(planned_tasks))
     work_output = working_output(args.output); checkpoint_path = state_path(args.output)
     final_manifest_path = args.manifest or manifest_path(args.output)
@@ -1035,30 +1417,55 @@ def generate(args: argparse.Namespace) -> dict[str, object]:
                 for line in stream: coverage.add(json.loads(line))
     forbidden = load_disjoint_fingerprints(args.disjoint_from); occurrences = Counter(actual_tasks)
     writer = JsonlWriter(work_output, args.episodes, args.shard_size, args.resume, existing_count)
+    pair_cache = {}; reserved: set[bytes] = set()
     started = time.monotonic(); retries = 0; length_rejections = 0; invariant_rejections = 0
     try:
         for record_id in range(existing_count, args.episodes):
-            task = planned_tasks[record_id]
-            for attempt in range(args.max_duplicate_retries + 1):
-                suite = configuration["suite"]
-                context = Context(episode_rng(args.seed, args.split, args.difficulty, record_id, attempt, suite), args.split, args.difficulty, suite)
-                try:
-                    episode = registry.tasks[task].builder(context, occurrences[task]); validate_tokens(episode.tokens)
-                except (RuntimeError, ValueError):
-                    invariant_rejections += 1; continue
-                if episode.task != task or episode.variant not in registry.tasks[task].variants or episode.task_version != registry.tasks[task].version or episode.suite != suite:
-                    raise ValueError(f"Task {task} returned incorrect task/version/variant metadata")
-                if args.max_tokens and len(episode.tokens) > args.max_tokens:
-                    length_rejections += 1; continue
-                digest = fingerprint(episode.tokens)
-                if digest not in seen and digest not in forbidden: break
-            else: raise ValueError(f"could not generate a unique {task} episode after {args.max_duplicate_retries} retries")
-            retries += attempt
+            plan = plans[record_id]; task = plan["task"]; suite = configuration["suite"]
+            pair_metadata = {}
+            cached = pair_cache.get(plan.get("pair_id"))
+            if cached:
+                episodes, field, role, digests, written = cached
+                episode = episodes[plan["pair_member"]]; digest = digests[plan["pair_member"]]
+                written += 1; pair_cache[plan["pair_id"]] = (episodes, field, role, digests, written)
+            else:
+                for attempt in range(args.max_duplicate_retries + 1):
+                    rng_index = plan.get("pair_index", record_id)
+                    context = Context(episode_rng(args.seed, args.split, args.difficulty, rng_index, attempt, suite), args.split, args.difficulty, suite)
+                    try:
+                        if plan["kind"] == "pair":
+                            first, second, field, role = build_counterfactual_pair(
+                                registry, context, task, plan["occurrence"], plan["relation"])
+                            episodes = (first, second); digests = tuple(fingerprint(item.tokens) for item in episodes)
+                            if args.max_tokens and any(len(item.tokens) > args.max_tokens for item in episodes):
+                                length_rejections += 1; continue
+                            if (digests[0] == digests[1] or any(value in seen or value in forbidden or value in reserved for value in digests)):
+                                continue
+                            pair_cache[plan["pair_id"]] = (episodes, field, role, digests, 1)
+                            reserved.update(digests)
+                            episode = episodes[plan["pair_member"]]; digest = digests[plan["pair_member"]]
+                        else:
+                            episode = registry.tasks[task].builder(context, plan["occurrence"]); validate_tokens(episode.tokens)
+                            if args.max_tokens and len(episode.tokens) > args.max_tokens:
+                                length_rejections += 1; continue
+                            digest = fingerprint(episode.tokens)
+                            if digest in seen or digest in forbidden or digest in reserved: continue
+                        break
+                    except (RuntimeError, ValueError):
+                        invariant_rejections += 1; continue
+                else: raise ValueError(f"could not generate a unique {task} episode after {args.max_duplicate_retries} retries")
+                retries += attempt
+            if plan["kind"] == "pair":
+                pair_metadata = {"pair_id": plan["pair_id"], "pair_member": plan["pair_member"],
+                                 "pair_relation": plan["relation"], "intervention_field": field,
+                                 "intervention_role": role}
             record = {"schema": SCHEMA_VERSION, "id": record_id, "tokens": episode.tokens, "answer_tokens": episode.answer_tokens, "task": episode.task, "difficulty": args.difficulty, "statement_count": episode.statement_count, "structural_template": episode.structural_template, "split": args.split, "split_key": episode.split_key,
-                      "variant": episode.variant, "task_version": episode.task_version, "suite": suite}
+                      "variant": episode.variant, "task_version": episode.task_version, "suite": suite, **pair_metadata}
             record_issues = validate_record(record, record_id)
             if record_issues: raise ValueError(f"generated invalid record: {record_issues[0]}")
-            writer.write(record); coverage.add(record); seen.add(digest); actual_tasks[task] += 1; occurrences[task] += 1; token_counts.update(episode.tokens); template_counts[episode.structural_template] += 1; length_counts[len(episode.tokens)] += 1; statement_total += episode.statement_count; question_total += int(bool(episode.answer_tokens))
+            writer.write(record); coverage.add(record); seen.add(digest); reserved.discard(digest); actual_tasks[task] += 1; occurrences[task] += 1; token_counts.update(episode.tokens); template_counts[episode.structural_template] += 1; length_counts[len(episode.tokens)] += 1; statement_total += episode.statement_count; question_total += int(bool(episode.answer_tokens))
+            if plan["kind"] == "pair" and pair_cache[plan["pair_id"]][4] == 2:
+                del pair_cache[plan["pair_id"]]
             if args.progress_every and writer.index % args.progress_every == 0:
                 writer.flush(); atomic_write_json(checkpoint_path, {**configuration, "status": "generating", "completed_episodes": writer.index})
                 elapsed = max(time.monotonic() - started, 0.001); print(f"generated {writer.index}/{args.episodes} episodes ({writer.index / elapsed:,.0f}/s)", file=sys.stderr)
@@ -1070,6 +1477,9 @@ def generate(args: argparse.Namespace) -> dict[str, object]:
     if configuration["require_capability_coverage"] and not capability_coverage["capability_coverage_passed"]:
         raise ValueError(f"Capability coverage failed: {capability_coverage}")
     staged_paths = matching_outputs(work_output, args.shard_size)
+    pair_diagnostics = pair_integrity_report(staged_paths, paired_fraction)
+    if not pair_diagnostics["integrity_passed"]:
+        raise ValueError(f"paired counterfactual integrity failed: {pair_diagnostics['issues'][0]}")
     verified_count, _, verified_seen, _, _, _, _, _, verification_issues = scan_records(staged_paths)
     if verification_issues: raise ValueError(f"final independent validation failed: {verification_issues[0]}")
     if verified_count != args.episodes or len(verified_seen) != verified_count: raise ValueError("final dataset count or uniqueness check failed")
@@ -1079,6 +1489,7 @@ def generate(args: argparse.Namespace) -> dict[str, object]:
         "split": args.split, "split_partition": "global balanced kind:identifier matrix (205/26/25 train/validation/test entities); every entity in an episode belongs to its split", "split_version": SPLIT_VERSION,
         "difficulty": args.difficulty, "profile": args.profile, "maximum_tokens_per_episode": args.max_tokens or None,
         "configuration": configuration, "capability_coverage": capability_coverage,
+        "paired_counterfactuals": pair_diagnostics,
         "vocabulary_version": "micro-transformer-v1", "vocabulary_size": len(VOCABULARY),
         "tokenizer": {"tokens_by_id": list(VOCABULARY_ORDER), "token_to_id": TOKEN_TO_ID, "padding": "use an external masked padding ID if batching requires padding"},
         "episode_count": writer.index, "token_count": total_tokens, "mean_tokens_per_episode": round(total_tokens / writer.index, 3),
@@ -1118,10 +1529,12 @@ def validate_dataset(args: argparse.Namespace) -> dict[str, object]:
         if set(expected) - registry.tasks.keys(): raise ValueError("Profile references unregistered tasks")
         selected = expected
     capability_coverage = coverage.report(registry, selected)
+    pair_diagnostics = pair_integrity_report(args.validate, getattr(args, "paired_counterfactual_fraction", 0.0))
+    if not pair_diagnostics["integrity_passed"]: issues.extend(pair_diagnostics["issues"])
     if getattr(args, "require_capability_coverage", False):
         if set(tasks) - registry.tasks.keys(): issues.append("Load extension task modules to certify their declared variants")
         if not capability_coverage["capability_coverage_passed"]: issues.append("capability coverage failed")
-    result = {"valid": not issues, "episodes": count, "tokens": sum(length * amount for length, amount in lengths.items()), "unique_sequences": len(seen), "duplicates": duplicates, "overlap_with_disjoint_inputs": overlap, "observed_vocabulary_tokens": len(tokens), "unobserved_vocabulary_tokens": sorted(VOCABULARY - set(tokens)), "task_counts": dict(sorted(tasks.items())), "template_counts": dict(sorted(templates.items())), "capability_coverage": capability_coverage, "issues": issues[:100]}
+    result = {"valid": not issues, "episodes": count, "tokens": sum(length * amount for length, amount in lengths.items()), "unique_sequences": len(seen), "duplicates": duplicates, "overlap_with_disjoint_inputs": overlap, "observed_vocabulary_tokens": len(tokens), "unobserved_vocabulary_tokens": sorted(VOCABULARY - set(tokens)), "task_counts": dict(sorted(tasks.items())), "template_counts": dict(sorted(templates.items())), "capability_coverage": capability_coverage, "paired_counterfactuals": pair_diagnostics, "issues": issues[:100]}
     print(json.dumps(result, indent=2, sort_keys=True)); return result
 
 
@@ -1139,6 +1552,8 @@ def build_parser() -> argparse.ArgumentParser:
     command.add_argument("--profile-file", type=Path, help="JSON task percentages summing to 100; can select registered extension tasks")
     command.add_argument("--task-module", type=Path, action="append", default=[], help="Trusted local Python extension exporting register(registry, api)")
     command.add_argument("--require-capability-coverage", action="store_true", help="Require every selected task variant and balanced yes/no in declared boolean variants")
+    command.add_argument("--paired-counterfactual-fraction", type=float, default=0.0,
+                         help="fraction of final records placed in two-record flip/invariant pairs (nearest feasible even count)")
     return command
 
 

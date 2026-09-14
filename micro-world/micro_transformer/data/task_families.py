@@ -61,7 +61,8 @@ class Scenario:
         tokens.append("|")
         return self.api.Episode(tokens, answer, self.task, len(self.events),
                                 f"{self.task}:{self.variant}", self.primary,
-                                variant=self.variant, task_version="1.0.0", suite=self.ctx.suite)
+                                variant=self.variant, task_version="1.0.0", suite=self.ctx.suite,
+                                _events=[event[:] for event in self.events], _question=list(question))
 
 
 def state_task(api, ctx, occurrence, task, variants):

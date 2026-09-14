@@ -44,6 +44,8 @@ micro-world/micro_world/          grid simulation and browser service
 micro-world/app/                  browser inspector client
 models/                           standalone transformer architecture
 training/                         preparation, training, evaluation and inference
+baselines/v1.0.0/                 trained reference, cards, results and sample data
+docs/guides/                      experiment and Micro-World adapter guidance
 scripts/                          command-line entry points
 artifacts/                        generated data, runs, checkpoints and reports
 ```
@@ -115,6 +117,26 @@ Run the test suite after setup:
 .venv-training/bin/python -m unittest discover -s tests/learning
 ```
 
+## Use the trained reference baseline
+
+The repository includes a compact, inference-only seed-42 checkpoint from the
+versioned v1.0.0 baseline. It is ready to use after installing the training
+dependencies:
+
+```bash
+.venv-training/bin/python -m training.infer \
+  --checkpoint baselines/v1.0.0/checkpoints/seed42-inference.pt \
+  --prompt 'hal move flag six to river. hal tell gia flag six at river. where gia knows flag six?'
+
+python scripts/baseline_artifacts.py verify-core
+```
+
+The [baseline entry point](baselines/v1.0.0/README.md) also records the model and
+dataset cards, fixed protocol, measured results, limitations, and installation of
+the optional complete reproducibility release. The complete release contains all
+seeds, exact packed data, frozen evaluations, predictions, reports, and evidence;
+it remains outside ordinary Git history.
+
 ## Generate training data
 
 Generation uses the fixed language and reference interpreter; it does not require
@@ -124,17 +146,18 @@ tokens.
 
 ```bash
 .venv/bin/python scripts/generate_dataset.py \
-  --episodes 500000 --split train --seed 46090 \
-  --output artifacts/datasets/v4-train-500k.jsonl \
+  --episodes 1000000 --split train --seed 46090 \
+  --paired-counterfactual-fraction 0.25 \
+  --output artifacts/datasets/v4-train-1m-pcf25.jsonl \
   --require-full-coverage --require-capability-coverage
 
 .venv/bin/python scripts/generate_dataset.py \
-  --episodes 5000 --split validation --seed 31415 \
+  --episodes 5000 --split validation --seed 46091 \
   --output artifacts/datasets/v4-validation-5k.jsonl \
   --require-full-coverage --require-capability-coverage
 
 .venv/bin/python scripts/generate_dataset.py \
-  --episodes 5000 --split test --seed 27182 \
+  --episodes 5000 --split test --seed 46092 \
   --output artifacts/datasets/v4-test-5k.jsonl \
   --require-full-coverage --require-capability-coverage
 ```
@@ -145,7 +168,7 @@ replacing them. Validate a generated corpus at any time:
 
 ```bash
 .venv/bin/python scripts/generate_dataset.py \
-  --validate artifacts/datasets/v4-train-500k.jsonl \
+  --validate artifacts/datasets/v4-train-1m-pcf25.jsonl \
   --require-capability-coverage
 ```
 
@@ -153,6 +176,10 @@ JSONL records contain token strings, exact answer tokens, task metadata, and spl
 identity. A neighbouring manifest records configuration, hashes, coverage, balance,
 uniqueness, and rejection counts. Generated corpora remain local under
 `artifacts/datasets/` and are ignored by Git.
+
+These commands create a new corpus under the current generator contract. For an
+exact comparison with reference v1.0.0, use its archived packed arrays: generator
+equivalence must not be assumed from matching counts and seeds alone.
 
 ## Run the Micro-World gridworld
 
@@ -176,8 +203,8 @@ format:
 
 ```bash
 .venv-training/bin/python -m training.prepare_data \
-  --input artifacts/datasets/v4-train-500k.jsonl \
-  --output artifacts/datasets/prepared/v4-train-500k
+  --input artifacts/datasets/v4-train-1m-pcf25.jsonl \
+  --output artifacts/datasets/prepared/v4-train-1m-pcf25
 
 .venv-training/bin/python -m training.prepare_data \
   --input artifacts/datasets/v4-validation-5k.jsonl \
@@ -194,10 +221,10 @@ Train the default transformer for one shuffled pass over the training split:
 .venv-training/bin/python -m training.train \
   --architecture models/transformer.py \
   --model-config training/configs/baseline.json \
-  --train-data artifacts/datasets/prepared/v4-train-500k \
+  --train-data artifacts/datasets/prepared/v4-train-1m-pcf25 \
   --validation-data artifacts/datasets/prepared/v4-validation-5k \
   --run-dir artifacts/runs/baseline-01 \
-  --epochs 1 --batch-size 32 --device auto
+  --steps 31250 --batch-size 32 --seed 42 --device cpu
 ```
 
 The validation split selects checkpoints; the final-test split must remain untouched
@@ -231,21 +258,24 @@ reference interpreter, and may be wrong. In interactive mode every input line is
 an independent episode.
 
 For LoRA, architecture variants, resume semantics, answer-weighted objectives,
-and scored batch inference, see the full [transformer training guide](training/README.md).
+and scored batch inference, see the full [transformer training guide](training/README.md)
+and the [experiment guide](docs/guides/experiment-guide.md).
 
 ## Outputs and reproducibility
 
-Generated data, prepared arrays, weights, logs, predictions, and reports are written
-under `artifacts/` and excluded from version control because they are reproducible
-and may be large. The repository contains source, specifications, tests, dependency
-declarations, and curated human-readable results; it does not contain pretrained
-weights or generated datasets.
+Generated data, prepared arrays, full training checkpoints, logs, predictions, and
+reports are written under `artifacts/` and excluded from version control because
+they may be large. The repository contains source, specifications, tests,
+dependency declarations, curated results, representative records, and one compact
+inference-only reference checkpoint. Install the complete immutable release under
+`artifacts/releases/` when exact multi-seed reproduction is needed.
 
 Recorded baseline results and limitations are available in:
 
 - [Initial baseline](docs/results/baseline.md)
 - [Broader v4 data](docs/results/broader-data.md)
 - [Colour correction](docs/results/colour-correction.md)
+- [Reference baseline v1.0.0](baselines/v1.0.0/model-card.md)
 
 Those reports document particular experiments rather than promises about every new
 run. The value of the baseline is that future architectural changes can be compared

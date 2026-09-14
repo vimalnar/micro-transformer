@@ -18,4 +18,5 @@ artifacts/datasets/*
 artifacts/checkpoints/*
 artifacts/runs/*
 artifacts/reports/*
+artifacts/releases/*
 !artifacts/README.md

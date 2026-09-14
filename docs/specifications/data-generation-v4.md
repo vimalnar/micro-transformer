@@ -62,6 +62,12 @@ python3 scripts/generate_dataset.py \
   --output artifacts/datasets/my-train.jsonl \
   --require-full-coverage --require-capability-coverage
 
+# Optional: put approximately 10% of the fixed 500,000 records into pairs.
+python3 scripts/generate_dataset.py \
+  --episodes 500000 --split train --seed 46090 \
+  --paired-counterfactual-fraction 0.10 \
+  --output artifacts/datasets/my-paired-train.jsonl
+
 python3 scripts/generate_dataset.py \
   --validate artifacts/datasets/my-train.jsonl \
   --require-capability-coverage
@@ -96,6 +102,47 @@ Output remains JSONL with token strings and answer labels, plus non-input metada
 The trainer receives token IDs only. Task, variant, suite and expected-answer
 metadata are not extra model features. Prepared format v2 retains variant metadata
 for evaluation; readers still accept existing prepared v1 datasets and checkpoints.
+
+## Optional paired counterfactual records
+
+`--paired-counterfactual-fraction F` enables controlled two-record pairs for
+`0.0 <= F <= 1.0`; it defaults to `0.0`. The requested episode count remains the
+final record count. The generator chooses the nearest feasible number of pairs as
+`min(floor(episodes / 2), floor(episodes * F / 2 + 0.5))`, so paired records are
+always even and an odd-sized fully paired request retains one unpaired record.
+
+Both members begin with the same structured scenario. A `flip` pair changes one
+task-relevant state field and must change the interpreter-derived answer. An
+`invariant` pair changes the location of one fresh distractor object and must keep
+the answer. Each member is replayed independently by the reference interpreter,
+and dataset validation additionally checks pair completeness, metadata agreement,
+answer relation, split agreement, unique IDs, and the declared one-field surface
+difference. Pair rows add `pair_id`, `pair_member`, `pair_relation`,
+`intervention_field`, and `intervention_role`; these fields are not encoded by
+`training.prepare_data` and do not reach the model. Records are deterministically
+shuffled and counterparts are kept non-adjacent whenever the dataset size permits.
+
+Invariant pairs cover every queried built-in family and variant. Flip pairs cover
+state tracking, delayed recall, ownership, colour properties, conditionals,
+belief, non-containment spatial relations, counting, temporal tasks,
+communication, opening ability, and all composition variants. Flip pairing is
+excluded for generic positive/negated attributes (not every attribute can be
+cleared in the language), containment (false requires an extra removal event),
+`some`/`none`/`all` (one move cannot guarantee every polarity), and visibility
+(the two polarities require unequal hide/find histories). Statement-only records
+have no supervised target. Extension tasks are left unpaired until an explicit
+structured intervention contract is added.
+
+The manifest reports requested and realized fractions, pair and paired-record
+counts, relation/task/variant counts, exclusions, paired and unpaired target
+balances, adjacency diagnostics, and semantic integrity results. Pair-enabled
+runs currently cannot use `--resume`; start them afresh with `--overwrite` after
+an interruption. Ordinary generation retains its existing resume behavior and,
+with the option omitted or zero, its byte-identical seeded JSONL output.
+
+Paired counterfactuals are a training-data intervention intended to emphasize
+input/output dependencies. They are not memory, retrieval, recurrence, persistent
+state, or evidence of any special higher-level capability.
 
 Sharded JSONL can be prepared one shard at a time. The current trainer consumes
 one prepared directory per run; multi-shard sampling is not implemented. For the

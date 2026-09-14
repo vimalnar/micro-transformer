@@ -1,0 +1,59 @@
+{
+  "schema": "micro-transformer-reference-baseline-v1",
+  "version": "1.0.0",
+  "name": "corrected-controlled-data-vanilla-micro-transformer",
+  "source_experiment": "EXP-0031.d",
+  "source_run": 794,
+  "architecture": {
+    "parameters": 1024512,
+    "layers": 5,
+    "width": 128,
+    "heads": 4,
+    "feed_forward_width": 512,
+    "context_length": 128,
+    "vocabulary_size": 128,
+    "sha256": "143d661a3629a063f2ceabea457799d9f98babe68a08190a2c2b1f5f1fb6f45d"
+  },
+  "included_checkpoint": {
+    "path": "checkpoints/seed42-inference.pt",
+    "role": "small ready-to-use inference checkpoint",
+    "sha256": "c07d54897fb844d27725935d65bbc2874161cca550ca1fe890862bef781be3a5",
+    "source_checkpoint_sha256": "0f1a66fd691882f7b5fafc8feb05354e7282510515588c15d0e63bc6200fe634",
+    "optimizer_and_rng_state_included": false
+  },
+  "full_release": {
+    "directory_name": "micro-transformer-baseline-v1.0.0",
+    "installed_path": "artifacts/releases/micro-transformer-baseline-v1.0.0",
+    "inventory_sha256": "476849d402fbe8578730db9f787a0dd4d1e8b1eb7f28bb51cd7fa7e4c87f6409",
+    "inventory_entries": 179,
+    "approximate_bytes": 411418624,
+    "download_url": null,
+    "publication_status": "prepared_locally_not_uploaded"
+  },
+  "training": {
+    "records": 1000000,
+    "question_records": 960000,
+    "statement_records": 40000,
+    "paired_records": 250000,
+    "complete_pairs": 125000,
+    "seeds": [42, 43, 44],
+    "steps": 31250,
+    "batch_size": 32,
+    "optimizer": "AdamW",
+    "learning_rate": 0.0003,
+    "weight_decay": 0.01,
+    "gradient_clip": 1.0,
+    "objective": "ordinary next-token cross-entropy",
+    "canonical_device": "cpu",
+    "canonical_dtype": "float32"
+  },
+  "results": {
+    "standard_exact": {"42": 0.914375, "43": 0.9072916666666667, "44": 0.8854166666666666},
+    "challenge_exact": {"42": 0.7802, "43": 0.7865, "44": 0.7597},
+    "shortcut_exact": {"42": 0.089, "43": 0.2293, "44": 0.1193},
+    "original_result": "partially_demonstrated",
+    "corrected_reporting_result": "demonstrated_with_controls",
+    "correction_is_post_hoc": true
+  },
+  "claim_boundary": "Input-in, prediction-out performance within the fixed formal language and measured distributions; no claim of general reasoning, persistent memory, sentience, or direct Micro-World control."
+}

@@ -20,6 +20,22 @@ Python came from the bundled Codex runtime; using another Python 3.12 installati
 is fine. `requirements.txt` pins the tested direct dependencies; the complete
 tested environment is recorded in `requirements-lock.txt`.
 
+## Trained reference
+
+`baselines/v1.0.0/checkpoints/seed42-inference.pt` is the compact frozen checkpoint
+from the corrected one-million-record vanilla baseline. It is suitable for immediate
+inference and as a base for LoRA. It deliberately omits optimizer and RNG state, so
+use a full checkpoint from the optional release for exact training continuation.
+
+```bash
+.venv-training/bin/python -m training.infer \
+  --checkpoint baselines/v1.0.0/checkpoints/seed42-inference.pt \
+  --prompt 'hal move flag six to river. hal tell gia flag six at river. where gia knows flag six?'
+```
+
+The catalog, model card, dataset card, fixed results, and complete-release workflow
+are under [`baselines/v1.0.0`](../baselines/v1.0.0/README.md).
+
 Run the following commands from the project root. `--device auto` selects CUDA,
 then Apple MPS, then CPU. Use `--device cpu` for a portable reference run.
 Training uses float32 and PyTorch's scaled-dot-product attention. GPU kernel
@@ -33,7 +49,7 @@ For new work, generate the broader v4 corpus and its prepared splits. See
 capability extensions and generation commands. The standard local paths are:
 
 ```text
-artifacts/datasets/prepared/v4-train-500k
+artifacts/datasets/prepared/v4-train-1m-pcf25
 artifacts/datasets/prepared/v4-validation-5k
 artifacts/datasets/prepared/v4-test-5k
 artifacts/datasets/prepared/v4-challenge-3k
@@ -84,10 +100,10 @@ the data, even when interpreter validation passes.
 .venv-training/bin/python -m training.train \
   --architecture models/transformer.py \
   --model-config training/configs/baseline.json \
-  --train-data artifacts/datasets/prepared/train-500k \
-  --validation-data artifacts/datasets/prepared/validation-1k \
+  --train-data artifacts/datasets/prepared/v4-train-1m-pcf25 \
+  --validation-data artifacts/datasets/prepared/v4-validation-5k \
   --run-dir artifacts/runs/baseline-01 \
-  --epochs 1 --batch-size 32 --device auto
+  --steps 31250 --batch-size 32 --seed 42 --device cpu
 ```
 
 The default configuration is five layers, width 128, four attention heads,
@@ -153,6 +169,14 @@ The mix retains 70% broad base tasks and adds 30% explicit colour grounding.
 Core vocabulary, semantics and default generation profiles remain unchanged.
 `scripts/generate_colour_cases.py` separately creates balanced evaluation cases;
 those diagnostic files are not training data.
+
+For ordinary or extension-backed generation, an optional flag such as
+`--paired-counterfactual-fraction 0.10` places approximately 10% of the fixed
+final record count in controlled flip/invariant pairs. Pairing is off by default
+and pair metadata is not encoded into model input. The [data generation
+specification](../docs/specifications/data-generation-v4.md) documents rounding,
+supported variants, integrity checks, and the current no-resume limitation for
+pair-enabled runs.
 
 Optimizer: AdamW, learning rate 0.0003, weight decay 0.01, gradient clipping 1.0.
 These are configurable starting settings, not empirically selected optimums.
@@ -232,10 +256,10 @@ Train a base checkpoint first, then attach a small optional adapter:
 
 ```bash
 .venv-training/bin/python -m training.train \
-  --init-from artifacts/runs/baseline-01/best.pt \
+  --init-from baselines/v1.0.0/checkpoints/seed42-inference.pt \
   --lora-rank 4 --lora-alpha 8 --lora-targets q_proj v_proj \
-  --train-data artifacts/datasets/prepared/train-500k \
-  --validation-data artifacts/datasets/prepared/validation-1k \
+  --train-data artifacts/datasets/prepared/v4-train-1m-pcf25 \
+  --validation-data artifacts/datasets/prepared/v4-validation-5k \
   --run-dir artifacts/runs/lora-01 --steps 100
 ```
 
