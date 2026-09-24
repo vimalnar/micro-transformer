@@ -46,3 +46,23 @@ checkpoint and record the base checkpoint hash.
 - Retain genuine failures and define exactly what changed from the baseline.
 - Do not infer memory or general reasoning from self-contained input-to-prediction
   accuracy.
+
+Use the canonical [experiment and report specification](../specifications/experiment-report-v1.md).
+Keep execution, protocol conformance, scientific validity, review status, and
+scientific outcome as separate fields.
+
+For a descriptive comparison of two JSON reports, declare the metrics rather than
+letting the tool select favourable fields:
+
+```bash
+python scripts/compare_experiment_reports.py \
+  --baseline artifacts/reports/baseline.json \
+  --candidate artifacts/reports/candidate.json \
+  --metric answer_exact_match \
+  --metric loss \
+  --output artifacts/reports/comparison.json
+```
+
+The comparison contains absolute and relative deltas only. Statistical inference,
+causal attribution, and transfer claims require an experiment designed to support
+them.

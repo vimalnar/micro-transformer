@@ -1,2 +1,5 @@
-torch==2.14.0
-numpy==2.5.3
+# Public compatibility environment for training, evaluation and the harness.
+# The canonical baseline's original environment remains recorded separately in
+# requirements-lock.txt; exact archived comparisons use the complete release.
+torch==2.8.0
+numpy==2.0.2

@@ -1,0 +1,22 @@
+name: V1 verification
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install public compatibility environment
+        run: python -m pip install -e '.[dev,training]'
+      - name: Verify V1 contracts and end-to-end smoke path
+        run: python scripts/verify_v1_suite.py --full
+      - name: Run complete test suite
+        run: python -m unittest discover -s tests

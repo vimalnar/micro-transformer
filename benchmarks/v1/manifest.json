@@ -1,0 +1,48 @@
+{
+  "format": "micro-transformer-benchmark-manifest-v1",
+  "version": "1.0.0-rc1",
+  "language": {
+    "standard": "Complete release standard held-out suite",
+    "challenge": "Complete release challenge suite",
+    "shortcut_control": "Complete release shortcut-control suite",
+    "public_regressions": "training/examples/trial_cases.jsonl",
+    "rule": "Published final cases become regression cases; new claims require fresh protected cases."
+  },
+  "micro_world": {
+    "implementation": "micro-world/micro_world/benchmark.py",
+    "scenario_families": [
+      "direct-navigation",
+      "detour-navigation",
+      "key-door-access",
+      "object-delivery",
+      "pressure-plate-causality",
+      "visit-and-return"
+    ],
+    "splits": {
+      "development": [11, 12],
+      "validation": [101],
+      "final": [1001, 1002]
+    },
+    "final_evaluation": {
+      "status": "executed_and_now_public_regression",
+      "date": "2026-09-24",
+      "experiment_id": "REF-MW-001",
+      "decisions_sha256": "a2d0f695cc9ea792531501e74f10d1f115f583038f8f4bf7e36d4b0a27e2c0ee"
+    },
+    "controls": [
+      "scripted-feasibility",
+      "wait",
+      "uniform-random",
+      "reactive-no-history"
+    ],
+    "primary_metrics": [
+      "completion_rate",
+      "steps",
+      "parse_valid_rate",
+      "physical_failure_rate",
+      "replay_matches"
+    ],
+    "claim_boundary": "Placement seeds are not structural generalization. Final cases are protected until the release run and become public regression cases afterward."
+  },
+  "required_report_format": "micro-transformer-experiment-report-v1"
+}

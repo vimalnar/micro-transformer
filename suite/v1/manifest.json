@@ -1,0 +1,70 @@
+{
+  "format": "micro-transformer-suite-manifest-v1",
+  "suite_version": "1.0.0-rc1",
+  "release_status": "v1_ready_except_larger_reference_model",
+  "scope": "Micro-scale transformer architecture R&D workbench",
+  "canonical_repository": "https://github.com/vimalnar/micro-transformer",
+  "artifacts": {
+    "language": {
+      "version": "MicroLanguage-128-v1",
+      "specification": "docs/reference/micro-transformer-language.md",
+      "implementation": "micro-world/micro_transformer/data/generator.py",
+      "vocabulary_size": 128,
+      "vocabulary_order_sha256": "c1549bf5b0c139848c824d5e285be1c41c55fe0af5dde35801cbf1eef725c556"
+    },
+    "small_reference_model": {
+      "version": "1.0.0",
+      "architecture": "models/transformer.py",
+      "configuration": "training/configs/baseline.json",
+      "checkpoint": "baselines/v1.0.0/checkpoints/seed42-inference.pt",
+      "catalog": "baselines/v1.0.0/manifest.json"
+    },
+    "larger_reference_model": {
+      "status": "deferred_by_project_owner",
+      "required_for_final_v1": true
+    },
+    "data_generator": {
+      "version": "4.1.0",
+      "schema": "micro-transformer-jsonl-v4",
+      "split_contract": "balanced-entity-matrix-v1",
+      "entrypoint": "scripts/generate_dataset.py",
+      "specification": "docs/specifications/data-generation-v4.md"
+    },
+    "training": {
+      "entrypoint": "training/train.py",
+      "guide": "training/README.md",
+      "requirements": "training/requirements.txt"
+    },
+    "inference_harness": {
+      "entrypoint": "harness/talk_to_micro_transformer.py",
+      "version": "1.1.0",
+      "uses_canonical_model_artifacts": true
+    },
+    "micro_world": {
+      "version": "gridworld-v1",
+      "specification": "docs/specifications/gridworld-v1.md",
+      "package": "micro-world/micro_world",
+      "benchmark_manifest": "benchmarks/v1/manifest.json"
+    },
+    "evaluation": {
+      "benchmark_manifest": "benchmarks/v1/manifest.json",
+      "reference_results": "benchmarks/v1/reference-results.json",
+      "raw_decisions": "benchmarks/v1/reference-decisions.jsonl",
+      "report_specification": "docs/specifications/experiment-report-v1.md"
+    },
+    "readiness": {
+      "evidence": "suite/v1/readiness.json",
+      "audit": "docs/results/v1-readiness-audit.md",
+      "quickstart": "docs/guides/v1-quickstart.md",
+      "repository_ci": ".github/workflows/ci.yml"
+    }
+  },
+  "supported_environments": {
+    "python": ">=3.9",
+    "recommended_python": "3.12",
+    "lightweight": "python -m pip install -e .",
+    "training": "python -m pip install -r training/requirements.txt",
+    "web": "python -m pip install -e '.[web]'"
+  },
+  "claim_boundary": "Results apply only to named versions, datasets, tasks, controls and interfaces. Micro-scale findings do not establish larger-scale transfer, general reasoning, agency or consciousness."
+}

@@ -1,0 +1,76 @@
+{
+  "format": "micro-transformer-v1-readiness-v1",
+  "audited_on": "2026-09-24",
+  "status": "v1_ready_except_larger_reference_model",
+  "final_v1_claim_permitted": false,
+  "completed_phases": [
+    "freeze-v1-contracts",
+    "consolidate-harness",
+    "close-data-and-python-interoperability",
+    "define-benchmark-and-report-contracts",
+    "run-bounded-micro-world-reference-experiment",
+    "package-reference-workflows-and-documentation",
+    "pass-pre-v1-verification-gate"
+  ],
+  "remaining_v1_blockers": [
+    "larger_reference_model"
+  ],
+  "verification": {
+    "contract_and_pipeline": {
+      "status": "passed",
+      "command": "python scripts/verify_v1_suite.py --full",
+      "coverage": [
+        "artifact identity",
+        "fresh disjoint data generation",
+        "data preparation",
+        "from-scratch training",
+        "checkpoint reload",
+        "held-out evaluation",
+        "canonical harness self-test"
+      ]
+    },
+    "repository_ci": {
+      "status": "configured",
+      "workflow": ".github/workflows/ci.yml",
+      "runs_full_contract_pipeline_and_test_suite": true,
+      "remote_run_status": "not_run_from_this_local_audit"
+    },
+    "public_compatibility_environment": {
+      "status": "passed",
+      "python": "3.12.14",
+      "torch": "2.8.0",
+      "numpy": "2.0.2",
+      "tests_passed": 90,
+      "tested_outside_repository_working_directory": true
+    },
+    "baseline_release": {
+      "status": "passed",
+      "verified_files": 179,
+      "scope": "locally installed complete v1.0.0 release"
+    },
+    "micro_world_reference": {
+      "status": "passed_with_negative_scientific_outcome",
+      "experiment_id": "REF-MW-001",
+      "scenario_families": 6,
+      "episodes_per_policy": 12,
+      "scripted_feasibility_completion_rate": 1.0,
+      "frozen_model_completion_rate": 0.0,
+      "all_replays_match": true,
+      "weights_unchanged": true,
+      "results": "benchmarks/v1/reference-results.json",
+      "raw_decisions": "benchmarks/v1/reference-decisions.jsonl"
+    }
+  },
+  "audience_assessment": {
+    "hobbyists": "verified_for_bounded_inspection_generation_training_inference_and_modification_workflows",
+    "academics": "verified_for_bounded_controlled_experiments_with_identity_controls_raw_run_outputs_and_report_contracts",
+    "product_teams": "verified_for_pre_scale_prototyping_and_failure_analysis_not_production_deployment_or_transfer_claims"
+  },
+  "known_limits": [
+    "The larger reference model is not yet produced and blocks the final V1 claim.",
+    "The complete three-seed baseline release is installed and verified locally but is not yet publicly downloadable from its manifest.",
+    "The clean compatibility audit was run on macOS arm64; Linux and Windows were not directly tested.",
+    "The frozen baseline failed the untrained Micro-World action adapter, which is retained as a valid negative diagnostic.",
+    "Micro-scale findings require fresh validation at any larger model or product scale."
+  ]
+}

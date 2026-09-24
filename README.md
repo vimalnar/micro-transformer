@@ -8,6 +8,12 @@ can be tested or replaced without hiding behaviour in a large framework.
 This repository contains baseline components, not a claim of general reasoning,
 persistent memory, or online learning. Normal model inference uses frozen weights.
 
+The current checkout is **V1-ready except for the deliberately deferred larger
+reference model**. The machine-readable suite contract is
+[`suite/v1/manifest.json`](suite/v1/manifest.json). Until that second model is
+trained and evaluated, this repository must not be described as the final complete
+V1 release.
+
 ## Purpose
 
 Micro-Transformer provides four complementary research components:
@@ -46,6 +52,9 @@ models/                           standalone transformer architecture
 training/                         preparation, training, evaluation and inference
 baselines/v1.0.0/                 trained reference, cards, results and sample data
 docs/guides/                      experiment and Micro-World adapter guidance
+harness/                          simple access to the canonical frozen checkpoint
+benchmarks/v1/                    versioned language and Micro-World suite contract
+suite/v1/                         machine-readable release source of truth
 scripts/                          command-line entry points
 artifacts/                        generated data, runs, checkpoints and reports
 ```
@@ -100,10 +109,13 @@ python3.12 -m venv .venv-training
 ```
 
 `pyproject.toml` is the authoritative application/development dependency
-declaration. `training/requirements.txt` pins the direct training dependencies,
-and `training/requirements-lock.txt` records the complete environment used for
-the tested macOS arm64 setup. Both `.venv/` and `.venv-training/` are deliberately
-ignored by Git; recreate them from these declarations rather than committing them.
+declaration. `training/requirements.txt` pins a publicly installable compatibility
+environment for training, evaluation, and the harness. The baseline's original
+Python 3.12/macOS arm64 environment is retained in
+`training/requirements-lock.txt` as provenance; it is not the public installation
+file. Exact archived baseline reproduction also requires the complete release.
+Both `.venv/` and `.venv-training/` are deliberately ignored by Git; recreate
+them from these declarations rather than committing them.
 
 The commands below use macOS/Linux paths. On Windows, create environments with
 `py -3.12 -m venv ...` and replace `.venv/bin/python` with
@@ -117,6 +129,16 @@ Run the test suite after setup:
 .venv-training/bin/python -m unittest discover -s tests/learning
 ```
 
+Verify the V1 contracts, or exercise the complete generate-to-evaluate smoke path:
+
+```bash
+.venv/bin/python scripts/verify_v1_suite.py
+.venv-training/bin/python scripts/verify_v1_suite.py --full
+```
+
+The same full smoke path and complete test suite run in
+`.github/workflows/ci.yml` for pushes and pull requests.
+
 ## Use the trained reference baseline
 
 The repository includes a compact, inference-only seed-42 checkpoint from the
@@ -129,6 +151,13 @@ dependencies:
   --prompt 'hal move flag six to river. hal tell gia flag six at river. where gia knows flag six?'
 
 python scripts/baseline_artifacts.py verify-core
+```
+
+For a simple interactive demonstration using those same canonical artifacts:
+
+```bash
+.venv-training/bin/python harness/talk_to_micro_transformer.py --self-test
+.venv-training/bin/python harness/talk_to_micro_transformer.py
 ```
 
 The [baseline entry point](baselines/v1.0.0/README.md) also records the model and
@@ -196,6 +225,19 @@ view and is not automatically supplied to an agent.
 
 ![Micro-World day and night concept](docs/concepts/micro-world-day-night-concept.png)
 
+Run the bounded scenario benchmark with feasibility, wait, random, reactive, and
+frozen-model policies:
+
+```bash
+.venv-training/bin/python scripts/run_microworld_benchmark.py \
+  --split validation --device cpu \
+  --report-dir artifacts/reports/my-micro-world-run
+```
+
+The frozen language checkpoint is not trained as an action policy. A negative or
+inconclusive result is valid evidence; the runner retains complete decisions,
+controls, replay identities, model hashes, and frozen-weight checks.
+
 ## Train the transformer
 
 First convert each validated JSONL corpus into the compact, memory-mapped training
@@ -260,6 +302,9 @@ an independent episode.
 For LoRA, architecture variants, resume semantics, answer-weighted objectives,
 and scored batch inference, see the full [transformer training guide](training/README.md)
 and the [experiment guide](docs/guides/experiment-guide.md).
+
+The [V1 quick start](docs/guides/v1-quickstart.md) provides separate starting
+paths for hobbyists, academic researchers, and product R&D teams.
 
 ## Outputs and reproducibility
 

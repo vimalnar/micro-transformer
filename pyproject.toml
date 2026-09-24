@@ -16,10 +16,25 @@ classifiers = [
 [project.optional-dependencies]
 web = ["fastapi", "uvicorn"]
 test = ["httpx"]
+training = ["torch==2.8.0", "numpy==2.0.2"]
 dev = ["fastapi", "uvicorn", "httpx"]
 
 [project.scripts]
 micro-transformer-generate = "micro_transformer.data.generator:main"
 
-[tool.setuptools.packages.find]
-where = ["micro-world"]
+[tool.setuptools]
+packages = [
+    "harness",
+    "training",
+    "micro_transformer",
+    "micro_transformer.data",
+    "micro_world",
+    "micro_world.media",
+    "micro_world.protocol",
+    "micro_world.service",
+    "micro_world.simulation",
+]
+
+[tool.setuptools.package-dir]
+micro_transformer = "micro-world/micro_transformer"
+micro_world = "micro-world/micro_world"

@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use Micro-Transformer, cite the repository release and the applicable experiment report."
+title: "Micro-Transformer: a micro-scale transformer R&D workbench"
+type: software
+authors:
+  - family-names: Naran
+    given-names: Vimal
+license: Apache-2.0
+repository-code: "https://github.com/vimalnar/micro-transformer"
+version: 1.0.0-rc1

@@ -20,3 +20,7 @@ artifacts/runs/*
 artifacts/reports/*
 artifacts/releases/*
 !artifacts/README.md
+
+# Private strategy source documents used while preparing the public V1 plan.
+/docs/plans/MicroTransformer_RnD_v1_Strategy.md
+/docs/plans/MicroTransformer_RnD_Long_Strategy.md

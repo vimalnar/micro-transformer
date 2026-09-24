@@ -17,8 +17,11 @@ python3.12 -m venv .venv-training
 
 The local training environment has already been created. On this machine its
 Python came from the bundled Codex runtime; using another Python 3.12 installation
-is fine. `requirements.txt` pins the tested direct dependencies; the complete
-tested environment is recorded in `requirements-lock.txt`.
+is fine. `requirements.txt` pins the publicly installable compatibility
+dependencies. The complete original environment used for the canonical baseline
+is retained in `requirements-lock.txt` as provenance. Runtime differences can
+change training numerics, so use the complete archived release for exact
+historical comparison and record the actual runtime in every new experiment.
 
 ## Trained reference
 

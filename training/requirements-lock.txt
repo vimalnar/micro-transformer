@@ -1,4 +1,6 @@
-# Tested on Python 3.12.14, macOS arm64. Direct dependencies are in requirements.txt.
+# Original canonical-baseline environment: Python 3.12.14, macOS arm64.
+# This is a provenance lock, not the public installation file. The publicly
+# installable compatibility environment is declared in requirements.txt.
 filelock==3.32.5
 fsspec==2026.7.0
 Jinja2==3.1.6

@@ -1,0 +1,31 @@
+{
+  "format": "micro-transformer-reference-result-summary-v1",
+  "experiment_id": "REF-MW-001",
+  "benchmark": "micro-world-benchmark-v1",
+  "split": "final",
+  "seeds": [1001, 1002],
+  "scenario_families": 6,
+  "model": {
+    "release": "1.0.0",
+    "checkpoint_sha256": "c07d54897fb844d27725935d65bbc2874161cca550ca1fe890862bef781be3a5",
+    "architecture_sha256": "143d661a3629a063f2ceabea457799d9f98babe68a08190a2c2b1f5f1fb6f45d",
+    "weights_unchanged": true
+  },
+  "policies": {
+    "scripted-feasibility": {"episodes": 12, "completed": 12, "completion_rate": 1.0},
+    "wait": {"episodes": 12, "completed": 0, "completion_rate": 0.0},
+    "uniform-random": {"episodes": 12, "completed": 0, "completion_rate": 0.0},
+    "reactive-no-history": {"episodes": 12, "completed": 4, "completion_rate": 0.3333333333333333},
+    "frozen-language-model": {"episodes": 12, "completed": 0, "completion_rate": 0.0, "parse_valid_rate": 0.0}
+  },
+  "states": {
+    "execution": "completed",
+    "conformance": "passed",
+    "validity": "bounded_diagnostic",
+    "review": "not_requested",
+    "scientific_outcome": "negative"
+  },
+  "raw_decisions": "benchmarks/v1/reference-decisions.jsonl",
+  "decisions_sha256": "a2d0f695cc9ea792531501e74f10d1f115f583038f8f4bf7e36d4b0a27e2c0ee",
+  "claim_boundary": "The frozen checkpoint was not trained on the adapter. This result does not establish general agency, planning, a learned world model, consciousness, or larger-scale transfer."
+}

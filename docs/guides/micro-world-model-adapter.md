@@ -30,3 +30,20 @@ Useful measurements include valid-action rate, task completion, steps to complet
 observation perturbation sensitivity, deterministic replay, and retention of the
 original language suites. Do not describe success on a textual state query as
 successful embodied control.
+
+## V1 reference implementation
+
+The bounded implementation is split into:
+
+- `micro_world.agent_adapter`: a versioned observation/action convention using
+  only the existing 128-token vocabulary;
+- `micro_world.benchmark`: six goal-directed scenario families, stopping rules,
+  replay, feasibility and behavioural controls, and report generation;
+- `benchmarks/v1/manifest.json`: split seeds, metrics, controls, and claim limits;
+- `scripts/run_microworld_benchmark.py`: a non-overwriting runner.
+
+The adapter omits hidden world state and world coordinates from the model prompt.
+The released language checkpoint was not trained on this convention, so parser or
+task failure is expected to remain visible. A scripted controller establishes
+scenario feasibility only. Wait, uniform-random, and reactive-no-history policies
+are behavioural controls, not model variants.
