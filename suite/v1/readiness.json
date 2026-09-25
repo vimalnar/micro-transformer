@@ -1,7 +1,7 @@
 {
   "format": "micro-transformer-v1-readiness-v1",
-  "audited_on": "2026-09-24",
-  "status": "v1_ready_except_larger_reference_model",
+  "audited_on": "2026-09-25",
+  "status": "v1_larger_reference_preliminary_single_seed",
   "final_v1_claim_permitted": false,
   "completed_phases": [
     "freeze-v1-contracts",
@@ -13,7 +13,9 @@
     "pass-pre-v1-verification-gate"
   ],
   "remaining_v1_blockers": [
-    "larger_reference_model"
+    "larger_reference_seed_panel",
+    "larger_reference_challenge_and_shortcut_evaluation",
+    "public_larger_reference_artifacts"
   ],
   "verification": {
     "contract_and_pipeline": {
@@ -67,7 +69,7 @@
     "product_teams": "verified_for_pre_scale_prototyping_and_failure_analysis_not_production_deployment_or_transfer_claims"
   },
   "known_limits": [
-    "The larger reference model is not yet produced and blocks the final V1 claim.",
+    "The larger reference model has a completed seed-42 preliminary run; the remaining seed panel and challenge/shortcut evaluation block the final V1 claim.",
     "The complete three-seed baseline release is installed and verified locally but is not yet publicly downloadable from its manifest.",
     "The clean compatibility audit was run on macOS arm64; Linux and Windows were not directly tested.",
     "The frozen baseline failed the untrained Micro-World action adapter, which is retained as a valid negative diagnostic.",

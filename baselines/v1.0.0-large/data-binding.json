@@ -1,0 +1,64 @@
+{
+  "format": "micro-transformer-large-reference-data-binding-v1",
+  "status": "bound_to_verified_packed_release",
+  "purpose": "Data identity for the from-scratch larger v1-language reference model.",
+  "language": {
+    "suite_manifest": "suite/v1/manifest.json",
+    "vocabulary_size": 128,
+    "vocabulary_order_sha256": "c1549bf5b0c139848c824d5e285be1c41c55fe0af5dde35801cbf1eef725c556"
+  },
+  "release": {
+    "root": "artifacts/releases/micro-transformer-baseline-v1.0.0",
+    "sha256_manifest": "artifacts/releases/micro-transformer-baseline-v1.0.0/SHA256.json",
+    "sha256_manifest_sha256": "476849d402fbe8578730db9f787a0dd4d1e8b1eb7f28bb51cd7fa7e4c87f6409",
+    "release_json_sha256": "1d20a88e1342d00e166d14d0f905f56ef35854e4dc56d36f46c4c10980742941"
+  },
+  "public_artifact_status": {
+    "status": "prepared_locally_not_published",
+    "download_url": null,
+    "required_before_public_reproduction": true
+  },
+  "model_facing_data": {
+    "train": {
+      "directory": "artifacts/releases/micro-transformer-baseline-v1.0.0/data/packed-train",
+      "metadata_sha256": "c7d455cac609af4ac2c5f798df543734a4efc4166809765ae0ec4d7a55aa7d46",
+      "tokens_sha256": "50673ffd1314b37376bcc2b145bc315bda663798d21162f84ce15b9cc981652d",
+      "offsets_sha256": "296d92aca2aef38f72c459e130b05a0dc5b7e3a34f72f5875744ff49ec4b3888",
+      "labels_sha256": "aa2098849e6576629eb52803d510535901b9594fd6f279ef2b90b771d9bbdb30",
+      "episodes": 1000000,
+      "tokens": 58169608,
+      "source_raw_jsonl": null,
+      "source_raw_jsonl_sha256": null
+    },
+    "validation": {
+      "directory": "artifacts/releases/micro-transformer-baseline-v1.0.0/data/packed-validation",
+      "metadata_sha256": "5898cec74f5a9ecf4f75ea21ab862d43c3cb510b2edb314732f6c603a013a481",
+      "tokens_sha256": "3716473a347f6f21018add6fcfac37a4a2ede540b4e2ba338c048115dd2ea352",
+      "offsets_sha256": "2d3049cb3a28d9663891b34e18554290bc28e6069a55f8fb5433ab9d85afd333",
+      "labels_sha256": "38079057b542fe7d885618a6d4844c97a33e5bb325127d9e93d99265a9eb8445",
+      "episodes": 5000,
+      "tokens": 276937,
+      "source_raw_jsonl": null,
+      "source_raw_jsonl_sha256": null
+    },
+    "standard_test": {
+      "directory": "artifacts/releases/micro-transformer-baseline-v1.0.0/data/packed-standard",
+      "metadata_sha256": "dab2cb6a621aba89007c3b598cb0f10cc6509e2ee102e8e8387d4117cdaa4a22",
+      "tokens_sha256": "7607f3d724edb80af58b85913c994f3e2c24336749e5b753f1afe945d7ee8e3c",
+      "offsets_sha256": "7ddd97b5b10a2488a7d8f63b1c42bcd1883115a6a3fccfe319496dc421238623",
+      "labels_sha256": "7c21a908b1ffccd6f1277205259b8bb68175bae3ffc7a59b6c20651728016650",
+      "episodes": 5000,
+      "tokens": 277929,
+      "source_raw_jsonl": null,
+      "source_raw_jsonl_sha256": null
+    }
+  },
+  "ambiguous_raw_jsonl": {
+    "path": "artifacts/datasets/baseline-train-1m-pcf25-seed46090.jsonl",
+    "sha256": "be25b8b680ede0cd87bbed6339ba4cf15cbc65f7b8be9194895afcd4c3c51393",
+    "disposition": "inspection_only_unbound",
+    "reason": "The authoritative raw source path recorded by packed metadata is absent, and this local JSONL hash cannot be proven byte-identical to the archived raw corpus."
+  },
+  "training_rule": "The larger reference run must consume the verified packed-train directory and may use only packed-validation for checkpoint selection. The standard test, challenge, and shortcut suites remain evaluation-only.",
+  "claim_boundary": "This binding establishes data identity for a controlled v1-language scaling comparison. It does not establish larger-scale transfer."
+}

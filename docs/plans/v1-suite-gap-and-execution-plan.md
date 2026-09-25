@@ -1,9 +1,10 @@
 # Micro-Transformer V1 suite: gap and execution plan
 
 Status: seven implementation phases and their pre-V1 audit completed locally on
-24 September 2026. The larger reference
-model is explicitly deferred by the project owner and remains required before a
-complete V1 claim. This plan keeps Micro-Transformer a small, inspectable research
+24 September 2026. This is a historical planning document; the larger reference
+model now has a preliminary seed-42 run, while the remaining seed panel and
+sealed-suite publication work remain required before a complete V1 claim. This
+plan keeps Micro-Transformer a small, inspectable research
 toolkit. It does not add a new orchestration CLI, native LangChain/LangGraph
 support, visualization platform, MicroVision, or MicroAudio.
 
@@ -135,7 +136,7 @@ models.
 ### 1. Freeze V1 contracts and source of truth
 
 Implemented through the machine-readable suite manifest and verifier. Canonical
-paths, versions and the deferred larger-model obligation are explicit.
+paths, versions and the larger-model completion obligation are explicit.
 
 ### 2. Consolidate the harness
 
@@ -171,10 +172,10 @@ citation file and reproducibility commands.
 
 Passed locally. The gate verifies all contracts, the full interoperability path,
 all tests, reference reports, clean installation, and audience-usefulness evidence.
-Its status is `v1_ready_except_larger_reference_model`; see
+Its status is `v1_larger_reference_preliminary_single_seed`; see
 `suite/v1/readiness.json` and `docs/results/v1-readiness-audit.md`.
 
-## Deferred phase: larger reference model
+## Remaining phase: larger reference model
 
 After the seven phases pass their audit, choose the smallest clearly larger model
 that remains practical on ordinary hardware. Train the declared seed set from
@@ -190,8 +191,7 @@ Pre-V1 acceptance gate:
   reproducible;
 - source, data, configs, weights, reports and controls are linked;
 - clean Python interoperability is verified on supported environments;
-- the larger model is clearly recorded as the sole intentionally deferred V1
-  artifact;
+- the larger model is clearly recorded as a preliminary single-seed V1 artifact;
 - claims remain limited to measured tasks and interfaces.
 
 ## Decision rule for future additions

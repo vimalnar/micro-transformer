@@ -18,9 +18,9 @@ class V1SuiteContractTests(unittest.TestCase):
         self.assertEqual(result["status"], "passed")
         self.assertTrue(all(result["checks"].values()))
 
-    def test_deferred_larger_model_prevents_final_v1_claim(self):
+    def test_preliminary_larger_model_prevents_final_v1_claim(self):
         manifest = json.loads((ROOT / "suite/v1/manifest.json").read_text())
-        self.assertEqual(manifest["release_status"], "v1_ready_except_larger_reference_model")
+        self.assertEqual(manifest["release_status"], "v1_larger_reference_preliminary_single_seed")
         self.assertTrue(manifest["artifacts"]["larger_reference_model"]["required_for_final_v1"])
 
     def test_lightweight_packages_are_importable(self):

@@ -1,9 +1,9 @@
-# V1 readiness audit, excluding the deferred larger model
+# V1 readiness audit, with preliminary larger model
 
-Date: 24 September 2026.
-Decision: **The seven requested phases pass the pre-V1 gate.** The toolkit is
-usable for bounded research workflows, but the final V1 claim remains blocked by
-the intentionally deferred larger reference model.
+Date: 24 September 2026; larger-model update: 25 September 2026.
+Decision: **The toolkit passes the pre-V1 gate and now has a preliminary single-seed
+larger model.** The final V1 scaling claim remains blocked by the unfinished seed
+panel, missing challenge/shortcut evaluation, and unpublished external artifacts.
 
 ## Requirement audit
 
@@ -19,7 +19,7 @@ the intentionally deferred larger reference model.
 | Micro-World | six-family benchmark and `REF-MW-001` | Pass as a bounded environment and reference workflow: scripted feasibility is 12/12 and all replays match |
 | Reference experiment | `benchmarks/v1/reference-results.json`; hash-checked raw decisions | Pass with a negative result: the frozen model is 0/12 with 0% complete-command parsing under the untrained adapter |
 | Documentation and repository readiness | README, quick start, contribution guide, citation metadata, GitHub Actions gate | Pass locally; the workflow is configured but has not run remotely, and publication remains a separate release operation |
-| Larger reference model | explicitly deferred | Not implemented; this is the sole intentionally deferred technical V1 artifact and blocks final V1 |
+| Larger reference model | preliminary seed-42 run | 9,946,560-parameter endpoint and standard evaluation exist; multi-seed, challenge/shortcut evaluation, and publication remain pending |
 
 ## Audience usefulness
 
@@ -48,8 +48,10 @@ agent platform, and small-model results must be retested at product scale.
 
 ## Residual risks and release work
 
-- Produce the larger reference model with source, config, weights, seed policy,
-  held-out results, and matched small-model comparison before declaring final V1.
+- Complete seeds 43, 44, and the independent seed-42 replay, then evaluate standard,
+  challenge, and shortcut suites before declaring final V1.
+- Publish the larger inference checkpoint and complete packed-data/training bundle
+  through an immutable release asset with a non-null URL and verified hashes.
 - Publish or otherwise make the complete three-seed baseline release retrievable;
   its manifest currently has no public download URL.
 - Run the compatibility gate on Linux and Windows if those platforms are to be
@@ -61,7 +63,8 @@ agent platform, and small-model results must be retested at product scale.
 
 ## Acceptance decision
 
-The requested seven phases are complete when the commands in the quick start pass
-from a clean checkout with the documented public dependencies. The only permitted
-suite status at this point is `v1_ready_except_larger_reference_model`. Changing it
-to final V1 requires the deferred model and a new audit.
+The requested seven phases remain complete when the commands in the quick start
+pass from a clean checkout with the documented public dependencies. The current
+suite status is `v1_larger_reference_preliminary_single_seed`. Changing it to final
+V1 requires the remaining runs, sealed-suite evaluation, public artifact release,
+and a new audit.

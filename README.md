@@ -8,10 +8,11 @@ can be tested or replaced without hiding behaviour in a large framework.
 This repository contains baseline components, not a claim of general reasoning,
 persistent memory, or online learning. Normal model inference uses frozen weights.
 
-The current checkout is **V1-ready except for the deliberately deferred larger
-reference model**. The machine-readable suite contract is
-[`suite/v1/manifest.json`](suite/v1/manifest.json). Until that second model is
-trained and evaluated, this repository must not be described as the final complete
+The current checkout contains a **preliminary single-seed larger reference model**;
+the remaining seed panel, held-out challenge evaluation, and external artifact
+publication are still pending before a final V1 scaling claim. The machine-readable
+suite contract is [`suite/v1/manifest.json`](suite/v1/manifest.json). Until those
+steps are complete, the larger result must not be described as a final multi-seed
 V1 release.
 
 ## Purpose

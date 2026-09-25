@@ -1,7 +1,7 @@
 {
   "format": "micro-transformer-suite-manifest-v1",
   "suite_version": "1.0.0-rc1",
-  "release_status": "v1_ready_except_larger_reference_model",
+  "release_status": "v1_larger_reference_preliminary_single_seed",
   "scope": "Micro-scale transformer architecture R&D workbench",
   "canonical_repository": "https://github.com/vimalnar/micro-transformer",
   "artifacts": {
@@ -20,8 +20,16 @@
       "catalog": "baselines/v1.0.0/manifest.json"
     },
     "larger_reference_model": {
-      "status": "deferred_by_project_owner",
-      "required_for_final_v1": true
+      "status": "trained_single_seed_preliminary",
+      "manifest": "baselines/v1.0.0-large/manifest.json",
+      "model_card": "baselines/v1.0.0-large/model-card.md",
+      "comparison_report": "baselines/v1.0.0-large/comparison-report.md",
+      "required_for_final_v1": true,
+      "pending": [
+        "complete seeds 43, 44, and independent seed-42 replay",
+        "evaluate standard, challenge, and shortcut suites",
+        "publish an immutable checkpoint and packed-data release"
+      ]
     },
     "data_generator": {
       "version": "4.1.0",

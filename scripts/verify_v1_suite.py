@@ -121,11 +121,18 @@ def verify_contracts() -> dict:
             and reference["policies"]["scripted-feasibility"]["completion_rate"] == 1.0
         ),
         "readiness_scope": (
-            readiness["status"] == "v1_ready_except_larger_reference_model"
+            readiness["status"] == "v1_larger_reference_preliminary_single_seed"
             and readiness["final_v1_claim_permitted"] is False
-            and readiness["remaining_v1_blockers"] == ["larger_reference_model"]
+            and readiness["remaining_v1_blockers"] == [
+                "larger_reference_seed_panel",
+                "larger_reference_challenge_and_shortcut_evaluation",
+                "public_larger_reference_artifacts",
+            ]
         ),
-        "larger_model_explicitly_deferred": artifacts["larger_reference_model"]["status"] == "deferred_by_project_owner",
+        "larger_model_preliminary_and_bounded": (
+            artifacts["larger_reference_model"]["status"] == "trained_single_seed_preliminary"
+            and len(artifacts["larger_reference_model"]["pending"]) == 3
+        ),
     })
     if not all(checks.values()):
         raise ValueError("V1 contract verification failed: " + ", ".join(key for key, value in checks.items() if not value))

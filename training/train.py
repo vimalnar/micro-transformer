@@ -64,6 +64,9 @@ def parser():
     command.add_argument("--batch-size", type=int, default=32)
     command.add_argument("--learning-rate", type=float, default=0.0003)
     command.add_argument("--weight-decay", type=float, default=0.01)
+    command.add_argument("--adam-epsilon", type=float, default=1e-8)
+    command.add_argument("--adam-foreach", choices=("auto", "true", "false"), default="auto")
+    command.add_argument("--deterministic", action="store_true")
     command.add_argument("--grad-clip", type=float, default=1.0)
     command.add_argument("--answer-weight", type=float, default=1.0,
                          help="Answer and episode-end target weight; ordinary tokens retain weight 1")
@@ -88,7 +91,7 @@ def train(args):
             raise ValueError(f"{name} must be positive")
     if any(step < 1 for step in args.save_steps):
         raise ValueError("Saved checkpoint steps must be positive")
-    if args.learning_rate <= 0 or args.grad_clip <= 0 or args.weight_decay < 0:
+    if args.learning_rate <= 0 or args.grad_clip <= 0 or args.weight_decay < 0 or args.adam_epsilon <= 0:
         raise ValueError("Invalid optimizer settings")
     if not math.isfinite(args.answer_weight) or args.answer_weight < 1:
         raise ValueError("answer_weight must be finite and at least 1")
@@ -97,6 +100,8 @@ def train(args):
         raise ValueError("New LoRA runs require --init-from and a positive --lora-rank")
     device = select_device(args.device)
     seed_everything(args.seed, args.threads)
+    if args.deterministic:
+        torch.use_deterministic_algorithms(True)
     train_data, validation = EpisodeDataset(args.train_data), EpisodeDataset(args.validation_data)
     try:
         if train_data.metadata["split"] != "train" or validation.metadata["split"] != "validation":
@@ -129,12 +134,16 @@ def train(args):
         if args.lora_rank:
             model.enable_lora(args.lora_rank, args.lora_alpha, args.lora_targets)
         parameters = [parameter for parameter in model.parameters() if parameter.requires_grad]
-        optimizer = torch.optim.AdamW(parameters, lr=args.learning_rate, weight_decay=args.weight_decay)
+        foreach = None if args.adam_foreach == "auto" else args.adam_foreach == "true"
+        optimizer = torch.optim.AdamW(parameters, lr=args.learning_rate, weight_decay=args.weight_decay,
+                                      eps=args.adam_epsilon, foreach=foreach)
         run = {"architecture_sha256": file_hash(source), "model_config": asdict(model.config),
                "train_metadata_sha256": file_hash(train_data.directory / "metadata.json"),
                "validation_metadata_sha256": file_hash(validation.directory / "metadata.json"),
                "seed": args.seed, "batch_size": args.batch_size, "learning_rate": args.learning_rate,
-               "weight_decay": args.weight_decay, "grad_clip": args.grad_clip,
+               "weight_decay": args.weight_decay, "adam_epsilon": args.adam_epsilon,
+               "adam_foreach": args.adam_foreach, "deterministic": args.deterministic,
+               "grad_clip": args.grad_clip,
                "answer_weight": args.answer_weight, "selection_metric": args.selection_metric,
                "training_source_sha256": {name: file_hash(Path(__file__).parent / name)
                                           for name in ("train.py", "metrics.py", "objectives.py", "data.py", "runtime.py")},
@@ -151,6 +160,10 @@ def train(args):
                 if run[key] != initial["run"][key]:
                     raise ValueError(f"Resume setting changed: {key}; use --init-from for a new run")
             for key, default in (("answer_weight", 1.0), ("selection_metric", "loss")):
+                if run[key] != initial["run"].get(key, default):
+                    raise ValueError(f"Resume setting changed: {key}; use --init-from for a new run")
+            for key, default in (("adam_epsilon", 1e-8), ("adam_foreach", "auto"),
+                                 ("deterministic", False)):
                 if run[key] != initial["run"].get(key, default):
                     raise ValueError(f"Resume setting changed: {key}; use --init-from for a new run")
             if ("training_source_sha256" in initial["run"] and

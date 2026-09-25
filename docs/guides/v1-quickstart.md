@@ -1,8 +1,9 @@
 # V1 quick start
 
 Micro-Transformer is a small research workbench for testing model and architecture
-ideas before committing to expensive scale-up. The current suite is complete
-except for the separately deferred larger reference model.
+ideas before committing to expensive scale-up. The current suite includes a
+preliminary single-seed larger reference model; the remaining seed panel,
+challenge/shortcut evaluation, and public artifact release are still pending.
 
 ## Choose a path
 
@@ -85,5 +86,6 @@ specified model-development experiment.
 .venv-training/bin/python -m unittest discover -s tests
 ```
 
-The final V1 claim remains unavailable until the larger reference model is trained,
-evaluated on the same named suites, and added to the suite manifest.
+The final V1 scaling claim remains unavailable until the larger seed panel is
+complete, the model is evaluated on the same named suites, and its public
+artifacts are added to the release manifest.

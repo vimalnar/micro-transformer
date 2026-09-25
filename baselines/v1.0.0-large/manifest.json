@@ -1,0 +1,55 @@
+{
+  "schema": "micro-transformer-large-reference-v1-preliminary",
+  "status": "preliminary_single_seed",
+  "language": {
+    "vocabulary_size": 128,
+    "vocabulary_order_sha256": "c1549bf5b0c139848c824d5e285be1c41c55fe0af5dde35801cbf1eef725c556",
+    "suite_manifest": "suite/v1/manifest.json"
+  },
+  "architecture": {
+    "source": "models/transformer.py",
+    "source_sha256": "143d661a3629a063f2ceabea457799d9f98babe68a08190a2c2b1f5f1fb6f45d",
+    "configuration": "training/configs/large-v1.json",
+    "layers": 8,
+    "width": 320,
+    "heads": 8,
+    "feed_forward_width": 1280,
+    "context_length": 128,
+    "parameters": 9946560
+  },
+  "data": {
+    "binding": "baselines/v1.0.0-large/data-binding.json",
+    "release_status": "prepared_locally_not_published",
+    "training_records": 1000000,
+    "validation_records": 5000,
+    "standard_test_records": 5000,
+    "raw_jsonl_authority": "none; verified packed release is canonical"
+  },
+  "training": {
+    "completed_runs": [
+      {"run_id": "seed-42", "seed": 42, "steps": 31250, "checkpoint": "latest.pt"}
+    ],
+    "pending_runs": [
+      {"run_id": "seed-43", "seed": 43},
+      {"run_id": "seed-44", "seed": 44},
+      {"run_id": "seed-42-replay", "seed": 42, "replay": true}
+    ],
+    "protocol": "matched v1 baseline: CPU float32, four threads, batch 32, AdamW lr 0.0003, weight decay 0.01, epsilon 1e-8, foreach false, clip 1.0, no scheduler"
+  },
+  "preliminary_results": {
+    "checkpoint_training_step": 31250,
+    "standard_questions": 4800,
+    "standard_correct": 4578,
+    "standard_exact_match": 0.95375,
+    "validation_exact_match": 0.9529166666666666,
+    "validation_answer_macro_accuracy": 0.9571885373362179,
+    "challenge_evaluated": false,
+    "shortcut_evaluated": false
+  },
+  "publication": {
+    "inference_checkpoint": "not_yet_published",
+    "full_training_bundle": "not_yet_published",
+    "download_url": null
+  },
+  "claim_boundary": "Preliminary single-seed evidence on the named fixed formal language and standard held-out distribution. No automatic scale transfer, general reasoning, agency, consciousness, or final V1 claim is made."
+}
