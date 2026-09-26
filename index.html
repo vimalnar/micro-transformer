@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Micro-Transformer is a small, inspectable transformer for learning by building, running controlled research, and testing early AI ideas." />
+    <meta name="theme-color" content="#f4f1e9" />
+    <title>Micro-Transformer — Small models. Clear questions.</title>
+    <link rel="stylesheet" href="styles.css?v=5" />
+    <script defer src="script.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="site-header shell">
+      <a class="wordmark" href="./" aria-label="Micro-Transformer home">Micro-Transformer</a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+        <span class="menu-icon" aria-hidden="true"></span>
+        <span class="sr-only">Toggle navigation</span>
+      </button>
+      <nav class="site-nav" id="site-nav" aria-label="Primary navigation">
+        <a href="https://vimalnaran.substack.com" target="_blank" rel="noopener noreferrer">Substack</a>
+        <a href="https://micro-transformer.readthedocs.io/en/latest/" target="_blank" rel="noopener noreferrer">Docs</a>
+        <a href="https://github.com/vimalnar/micro-transformer" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <section class="hero shell" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">Open source <span>/</span> Small models <span>/</span> Clear experiments</p>
+          <h1 id="hero-title">Learn by building. Research by testing.</h1>
+          <p class="hero-dek">An open, inspectable research toolkit built around a small transformer. Learn how the model works, run controlled experiments, and test narrow AI ideas locally.</p>
+          <div class="hero-actions">
+            <a class="button button-dark" href="https://micro-transformer.readthedocs.io/en/latest/guides/v1-quickstart/">Start with the quickstart <span aria-hidden="true">→</span></a>
+            <a class="button button-light" href="https://github.com/vimalnar/micro-transformer">Explore on GitHub <span aria-hidden="true">→</span></a>
+          </div>
+          <p class="hero-index">Learn <span>/</span> Study <span>/</span> Prototype <span>/</span> Evaluate</p>
+        </div>
+
+        <div class="hero-visual" aria-label="Diagram showing tokens passing through attention and producing outputs">
+          <div class="margin-note note-top">small models<br />clear ideas<br />real progress</div>
+          <svg class="transformer-diagram" viewBox="0 0 680 390" role="img" aria-labelledby="diagram-title diagram-desc">
+            <title id="diagram-title">Illustrative next-token generation</title>
+            <desc id="diagram-desc">Input tokens pass through an attention block to produce a token sequence. The example is conceptual; model predictions can be wrong.</desc>
+            <defs>
+              <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse">
+                <path d="M 28 0 L 0 0 0 28" fill="none" stroke="#7788a1" stroke-opacity=".13" stroke-width="1" />
+              </pattern>
+              <linearGradient id="panelBlue" x1="0" x2="1">
+                <stop offset="0" stop-color="#eef3f8" />
+                <stop offset="1" stop-color="#e3edf8" />
+              </linearGradient>
+            </defs>
+            <rect x="0" y="0" width="680" height="390" fill="url(#grid)" />
+
+            <g class="svg-label" fill="#172238">
+              <text x="210" y="67">Q</text><text x="318" y="67">K</text><text x="426" y="67">V</text>
+            </g>
+
+            <g class="token-stack" fill="url(#panelBlue)" stroke="#4172ac">
+              <rect x="20" y="86" width="112" height="47" /><rect x="20" y="141" width="112" height="47" />
+              <rect x="20" y="196" width="112" height="47" /><rect x="20" y="251" width="112" height="47" />
+            </g>
+            <g class="svg-copy" fill="#172238" text-anchor="middle">
+              <text x="76" y="116">The</text><text x="76" y="171">cat</text><text x="76" y="226">learns</text><text x="76" y="281">...</text>
+            </g>
+            <path class="brace" d="M 151 88 C 177 88 177 88 177 108 L 177 139 C 177 155 194 165 204 165 C 194 165 177 175 177 191 L 177 276 C 177 296 177 296 151 296" />
+            <text class="svg-copy" x="169" y="333" text-anchor="middle">input tokens</text>
+
+            <g class="arrow"><path d="M 207 163 H 248" /><path d="M 238 153 L 248 163 L 238 173" /></g>
+            <g class="attention-panel">
+              <path d="M 258 97 L 335 65 L 335 278 L 258 310 Z" fill="#f7f9fb" stroke="#172238" />
+              <path d="M 335 65 L 412 97 L 412 310 L 335 278 Z" fill="#edf2f7" stroke="#172238" />
+              <path d="M 347 104 L 424 72 L 424 285 L 347 317 Z" fill="#f7f9fb" stroke="#172238" />
+              <g class="attention-grid" stroke="#7b91ad" stroke-width="1">
+                <path d="M 273 123 H 320 M 273 154 H 320 M 273 185 H 320 M 273 216 H 320 M 273 247 H 320" />
+                <path d="M 273 123 V 247 M 289 116 V 240 M 305 109 V 233 M 320 103 V 226" />
+                <path d="M 350 122 H 397 M 350 153 H 397 M 350 184 H 397 M 350 215 H 397 M 350 246 H 397" />
+                <path d="M 350 122 V 246 M 366 115 V 239 M 382 108 V 232 M 397 102 V 225" />
+              </g>
+              <g fill="#2b5d99">
+                <rect x="288" y="147" width="16" height="18" /><rect x="305" y="209" width="16" height="18" />
+                <rect x="366" y="178" width="16" height="18" /><rect x="350" y="240" width="16" height="18" />
+              </g>
+            </g>
+            <text class="svg-copy" x="343" y="352" text-anchor="middle">attention</text>
+            <g class="arrow"><path d="M 435 163 H 476" /><path d="M 466 153 L 476 163 L 466 173" /></g>
+
+            <g class="token-stack" fill="url(#panelBlue)" stroke="#4172ac">
+              <rect x="500" y="86" width="145" height="47" /><rect x="500" y="141" width="145" height="47" />
+              <rect x="500" y="196" width="145" height="47" /><rect x="500" y="251" width="145" height="47" />
+            </g>
+            <g class="svg-copy" fill="#172238" text-anchor="middle">
+              <text x="572" y="116">The</text><text x="572" y="171">cat</text><text x="572" y="226">learns</text><text x="572" y="281">today</text>
+            </g>
+            <path class="brace" d="M 665 88 C 676 88 676 88 676 108 L 676 139 C 676 155 684 165 690 165 C 684 165 676 175 676 191 L 676 276 C 676 296 676 296 665 296" />
+            <text class="svg-copy" x="573" y="333" text-anchor="middle">generated tokens</text>
+          </svg>
+          <div class="proof-tags" aria-label="Project qualities">
+            <span class="tag tag-blue">reproducible</span>
+            <span class="tag tag-red">inspectable</span>
+            <span class="tag tag-blue">local-first</span>
+          </div>
+          <div class="margin-note note-bottom">inspect<br />test<br />refine</div>
+        </div>
+      </section>
+
+      <section class="what-is shell" id="about" aria-labelledby="what-is-title">
+        <div>
+          <p class="eyebrow">What it is</p>
+          <h2 id="what-is-title">A small system for learning and testing.</h2>
+        </div>
+        <div class="what-is-copy">
+          <p>Micro-Transformer is an open-source learning and R&amp;D suite built around a small, inspectable transformer—the neural-network architecture behind many modern language models.</p>
+          <p>It brings together a readable language specification, a small transformer, an experiment harness, and a separate Micro-World grid simulation. Hobbyists, academics, and product teams can use these pieces to build intuition, run controlled tests, and prototype narrow AI ideas locally before deciding whether a larger-scale experiment is justified.</p>
+        </div>
+      </section>
+
+      <section class="cards shell" id="examples" aria-labelledby="examples-title">
+        <h2 class="sr-only" id="examples-title">Explore the suite</h2>
+        <article class="card">
+          <div class="card-number">01 <span></span></div>
+          <div class="card-body">
+            <div>
+              <h3>Language</h3>
+              <p>Inspect the small, fixed formal language used by the model and its training data.</p>
+              <a href="https://micro-transformer.readthedocs.io/en/latest/reference/micro-transformer-language/">Explore the language <span aria-hidden="true">→</span></a>
+            </div>
+            <div class="card-sketch sketch-language" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+          </div>
+        </article>
+        <article class="card">
+          <div class="card-number">02 <span></span></div>
+          <div class="card-body">
+            <div>
+              <h3>Harness</h3>
+              <p>Try the bundled frozen checkpoint with example prompts and known failure cases.</p>
+              <a href="https://micro-transformer.readthedocs.io/en/latest/guides/harness/">Explore the harness <span aria-hidden="true">→</span></a>
+            </div>
+            <div class="card-sketch sketch-chart" aria-hidden="true"><span class="chart-line blue"></span><span class="chart-line red"></span><span class="chart-line grey"></span></div>
+          </div>
+        </article>
+        <article class="card">
+          <div class="card-number">03 <span></span></div>
+          <div class="card-body">
+            <div>
+              <h3>Micro-World</h3>
+              <p>Inspect a separate grid simulation and its agent observations; connect a model through your own experiment adapter.</p>
+              <a href="https://micro-transformer.readthedocs.io/en/latest/guides/microworld-usage/">Explore Micro-World <span aria-hidden="true">→</span></a>
+            </div>
+            <div class="card-sketch sketch-world" aria-hidden="true"><span class="flag"></span><span class="dot"></span></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="use-cases shell" id="use-cases" aria-labelledby="use-cases-title">
+        <div class="use-cases-intro">
+          <div>
+            <p class="eyebrow">Examples in practice</p>
+            <h2 id="use-cases-title">What Micro-Transformer can help you learn and decide.</h2>
+          </div>
+          <p>The benefit is a clearer next step: practical intuition for learners, more interpretable evidence for researchers, and less uncertainty about what deserves a larger product experiment.</p>
+        </div>
+
+        <div class="use-case-grid">
+          <article class="use-case">
+            <p class="use-case-label">01 <span>/</span> Learn transformers by experimenting</p>
+            <h3>For hobbyists</h3>
+            <p>Learn how transformers work by trying small experiments and seeing what changes in the model’s answers.</p>
+            <ul>
+              <li>Change an example or a model setting, then compare the prediction with what you expected.</li>
+              <li>Explore concepts like tokens, attention, and training in a small system you can inspect.</li>
+              <li>See both successful and surprising outputs—and use each as a clue about how the model behaves.</li>
+            </ul>
+            <p class="use-case-note">Small, hands-on experiments make transformer ideas visible—not just theoretical.</p>
+          </article>
+
+          <article class="use-case">
+            <p class="use-case-label">02 <span>/</span> Fast, traceable experiments</p>
+            <h3>For academics</h3>
+            <p>Run focused experiments on a tractable model, keeping the setup and outcomes clear enough to inspect, reproduce, and build on.</p>
+            <ul>
+              <li>Compare a defined change with a baseline to quickly find which hypotheses merit deeper study.</li>
+              <li>Keep methods, model and data versions, and outcomes traceable for follow-up studies and shared review.</li>
+              <li>Take promising questions to larger models and extend the investigation at greater scale.</li>
+            </ul>
+            <p class="use-case-note">A practical launchpad for reproducible research and follow-on studies at larger scale.</p>
+          </article>
+
+          <article class="use-case">
+            <p class="use-case-label">03 <span>/</span> Rapid AI iteration</p>
+            <h3>For product teams</h3>
+            <p>Explore a focused AI idea in a quick feedback loop: try a bounded task, inspect how the model responds, and refine the question before committing to a larger product experiment.</p>
+            <ul>
+              <li>See early where an idea works, where it breaks, and which inputs expose its limits.</li>
+              <li>Turn model behavior into concrete evidence that helps the team prioritize its next iteration.</li>
+              <li>Invest in broader evaluation or integration only when the small-scale results justify it.</li>
+            </ul>
+            <p class="use-case-note">A local testbed for model-output experiments—not a production integration, command executor, or action-safety system.</p>
+          </article>
+        </div>
+
+        <div class="iteration-note">
+          <span class="iteration-label">Fast iteration</span>
+          <p>Shorten the distance between an idea and useful evidence: build a small probe, run it repeatedly, learn from the failures, then scale only what still looks worth testing.</p>
+        </div>
+      </section>
+
+      <section class="method shell" id="method" aria-labelledby="method-title">
+        <div>
+          <p class="eyebrow">The working principle</p>
+          <h2 id="method-title">Start small enough to learn from.</h2>
+        </div>
+        <p>For hobbyists, it is a hands-on way to learn by building. For academics, it is a controlled testbed for clear questions and reproducible experiments. For companies, it is a low-cost proving ground for ideas worth testing before larger investment—while keeping the iteration loop short and inspectable.</p>
+      </section>
+    </main>
+
+    <footer class="site-footer shell">
+      <span>Small transformers. Clearer experiments.</span>
+      <span>© <span id="year"></span> Micro-Transformer</span>
+    </footer>
+  </body>
+</html>
