@@ -1,6 +1,7 @@
 site_name: Micro-Transformer
 site_description: Inspectable baseline for training and evaluating a small transformer
 repo_url: https://github.com/vimalnar/micro-transformer
+edit_uri: edit/main/
 
 theme:
   name: readthedocs
