@@ -1,0 +1,27 @@
+site_name: Micro-Transformer
+site_description: Inspectable baseline for training and evaluating a small transformer
+repo_url: https://github.com/vimalnar/micro-transformer
+
+theme:
+  name: readthedocs
+
+nav:
+  - Home: index.md
+  - Guides:
+      - V1 quickstart: guides/v1-quickstart.md
+      - Experiment guide: guides/experiment-guide.md
+      - Micro-World model adapter: guides/micro-world-model-adapter.md
+  - Specifications:
+      - System architecture: specifications/system-architecture.md
+      - Gridworld v1: specifications/gridworld-v1.md
+      - Data generation v4: specifications/data-generation-v4.md
+      - Experiment report v1: specifications/experiment-report-v1.md
+  - Results:
+      - Baseline: results/baseline.md
+      - V1 readiness audit: results/v1-readiness-audit.md
+      - Micro-World reference v1: results/micro-world-reference-v1.md
+  - Reference:
+      - Micro-Transformer language: reference/micro-transformer-language.md
+
+exclude_docs: |
+  reference/Micro-Transformer Language Reference.docx
