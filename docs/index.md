@@ -9,8 +9,13 @@ This documentation describes the repository's interfaces, experiments, guides,
 and preliminary results. It does not claim general reasoning, persistent memory,
 online learning, or machine consciousness.
 
+Before following a how-to, start with the [R&D suite artifacts and orientation](artifacts.md)
+for a tour of the language, datasets, model, harness, benchmarks, Micro-World,
+and their current evidence and limitations.
+
 ## Start here
 
+- [R&D suite artifacts and orientation](artifacts.md)
 - [Documentation map](documentation-map.md)
 - [Choose a path by audience](guides/audience-guide.md)
 - [Install and setup](guides/setup.md)

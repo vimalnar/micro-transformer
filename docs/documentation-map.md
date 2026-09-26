@@ -5,6 +5,7 @@ practical onboarding from technical specifications and from evidence about resul
 
 | Area | What it should answer | Primary audience | Recommended contents | Current source or status |
 | --- | --- | --- | --- | --- |
+| R&D suite artifacts and orientation | What are the main components and outputs, and how do they fit together? | Everyone | Purpose, source locations, representative data/models/evaluations, visuals, status, and claim boundaries | [`Artifacts and orientation`](artifacts.md) |
 | Setup | How do I install, verify, and run the repository? | Everyone | Python version, environments, dependencies, checkout, smoke tests, troubleshooting | [`Install and setup`](guides/setup.md) |
 | Quickstart | What is the shortest successful first session? | New users | Install, run one example, inspect one output, run one test | [`V1 quickstart`](guides/v1-quickstart.md) |
 | Project orientation | What is this project, and what is it not? | Everyone | Purpose, claim limits, repository map, terminology, evidence boundaries | [`System architecture`](specifications/system-architecture.md) and the [home page](index.md) |

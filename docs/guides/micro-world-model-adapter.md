@@ -1,5 +1,14 @@
 # Connecting a model to Micro-World
 
+## Before you follow this guide
+
+This guide describes an experiment-specific connection between two separate
+baseline components: the fixed-vocabulary language model and the typed-action,
+partially observed Micro-World simulation. The bundled checkpoint is not a trained
+world controller. For a broader tour of the model, harness, data and evaluation
+artifacts—including diagrams and real Micro-World observation renders—start with
+the [R&D suite artifacts and orientation](../artifacts.md).
+
 Micro-World and the formal-language transformer are intentionally independent. The
 simulator owns interactive world truth; the language interpreter owns generated
 dataset truth. A model adapter is an experiment component, not a hidden part of

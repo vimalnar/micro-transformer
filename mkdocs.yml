@@ -9,6 +9,8 @@ theme:
 nav:
   - Home: index.md
   - Documentation map: documentation-map.md
+  - R&D suite:
+      - Artifacts and orientation: artifacts.md
   - By audience:
       - Choose a path: guides/audience-guide.md
   - Guides:
