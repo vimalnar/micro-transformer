@@ -46,6 +46,7 @@ frozen-checkpoint harness:
 python3.12 -m venv .venv-training
 .venv-training/bin/python -m pip install --upgrade pip
 .venv-training/bin/python -m pip install -r training/requirements.txt
+.venv-training/bin/python -m pip install -e . --no-deps
 ```
 
 The public compatibility requirements are pinned in
@@ -67,13 +68,21 @@ The first command checks the versioned suite contracts without running a full
 training job. The harness self-test checks its frozen model artifacts and a small
 set of named predictions. It is not a comprehensive capability test.
 
-To run all repository tests:
+Run tests in the environment that supplies their dependencies:
 
 ```bash
-.venv/bin/python -m unittest discover -s tests
+.venv/bin/python -m unittest discover -s tests/data
+.venv/bin/python -m unittest discover -s tests/simulation
+.venv/bin/python -m unittest discover -s tests/media
+.venv/bin/python -m unittest discover -s tests/service
 .venv-training/bin/python -m unittest discover -s tests/model_architecture
 .venv-training/bin/python -m unittest discover -s tests/learning
+.venv-training/bin/python -m unittest discover -s tests/release
 ```
+
+The training environment's editable install makes the repository packages
+available without installing its optional web dependencies. The `.venv` used for
+service tests has those web dependencies from the `dev` extra.
 
 ## Start the Micro-World inspector
 

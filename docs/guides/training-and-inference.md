@@ -20,7 +20,9 @@ The generator and interpreter do not require PyTorch. Preparation validates
 records and encodes tokens. Training reads packed data, batches independent
 right-padded episodes, and masks padding targets. The standard objective is
 next-token cross-entropy. Expected answers and task labels are not additional
-model input features.
+model input features. Create the training environment using the
+[setup guide](setup.md), including its editable package-install step, before
+running the commands below.
 
 ## Generate and prepare a small dataset
 
