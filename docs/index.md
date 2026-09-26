@@ -12,10 +12,22 @@ online learning, or machine consciousness.
 ## Start here
 
 - [Documentation map](documentation-map.md)
+- [Choose a path by audience](guides/audience-guide.md)
+- [Install and setup](guides/setup.md)
 - [V1 quickstart](guides/v1-quickstart.md)
+- [Frozen-model harness](guides/harness.md)
+- [Worked examples](guides/examples.md)
+- [Training and inference](guides/training-and-inference.md)
+- [Using Micro-World](guides/microworld-usage.md)
+- [Limitations and claim boundaries](guides/limitations.md)
 - [Experiment guide](guides/experiment-guide.md)
 - [System architecture](specifications/system-architecture.md)
+- [Model specifications](specifications/model-specifications.md)
+- [Transformer architecture](specifications/transformer-architecture.md)
 - [Micro-Transformer language reference](reference/micro-transformer-language.md)
+- [Reproducibility and reporting](guides/reproducibility.md)
+- [Contributing](guides/contributing.md)
+- [Release status](guides/release-status.md)
 
 ## Repository
 

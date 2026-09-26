@@ -116,7 +116,7 @@ does not isolate their relative contributions. Task names such as "belief" and
 "delayed recall" are benchmark labels, not evidence of capabilities beyond the
 specific evaluated tasks.
 
-The [diagnostic case definitions](../../training/examples/trial_cases.jsonl) are
+The [diagnostic case definitions](https://github.com/vimalnar/micro-transformer/blob/main/training/examples/trial_cases.jsonl) are
 version-controlled. Their generated summaries and predictions are local artifacts.
 
 ## Inference harness

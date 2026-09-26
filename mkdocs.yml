@@ -8,21 +8,38 @@ theme:
 nav:
   - Home: index.md
   - Documentation map: documentation-map.md
+  - By audience:
+      - Choose a path: guides/audience-guide.md
   - Guides:
+      - Setup: guides/setup.md
       - V1 quickstart: guides/v1-quickstart.md
+      - Frozen-model harness: guides/harness.md
+      - Worked examples: guides/examples.md
+      - Training and inference: guides/training-and-inference.md
       - Experiment guide: guides/experiment-guide.md
       - Micro-World model adapter: guides/micro-world-model-adapter.md
+      - Using Micro-World: guides/microworld-usage.md
+      - Reproducibility: guides/reproducibility.md
+      - Contributing: guides/contributing.md
+      - Release status: guides/release-status.md
+      - Limitations: guides/limitations.md
   - Specifications:
       - System architecture: specifications/system-architecture.md
+      - Model specifications: specifications/model-specifications.md
+      - Transformer architecture: specifications/transformer-architecture.md
+      - Micro-Transformer language: reference/micro-transformer-language.md
       - Gridworld v1: specifications/gridworld-v1.md
       - Data generation v4: specifications/data-generation-v4.md
       - Experiment report v1: specifications/experiment-report-v1.md
+      - Colour correction: specifications/colour-correction.md
   - Results:
       - Baseline: results/baseline.md
+      - Broader data: results/broader-data.md
+      - Colour correction: results/colour-correction.md
       - V1 readiness audit: results/v1-readiness-audit.md
       - Micro-World reference v1: results/micro-world-reference-v1.md
-  - Reference:
-      - Micro-Transformer language: reference/micro-transformer-language.md
+
 
 exclude_docs: |
   reference/Micro-Transformer Language Reference.docx
+  plans/**
