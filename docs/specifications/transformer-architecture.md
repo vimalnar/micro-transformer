@@ -5,6 +5,11 @@ The implemented neural model is a small decoder-only causal transformer in
 in a fixed formal language. The model implementation does not contain the
 language's interpreter or handwritten answer rules.
 
+![Diagram of the implemented Micro-Transformer neural architecture](../concepts/transformer-architecture.svg)
+
+*Small v1 reference configuration. The optional LoRA path is shown only as an
+extension; it is disabled in the baseline checkpoint.*
+
 ## Forward path
 
 For a batch of token IDs shaped `[batch, time]`:

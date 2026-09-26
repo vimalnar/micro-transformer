@@ -47,6 +47,11 @@ The language reference interpreter owns dataset truth. The grid simulation owns
 interactive world truth. They are intentionally separate baseline components and
 must not be presented as one integrated interpreter.
 
+![System boundaries between the formal-language and Micro-World paths](../concepts/system-boundaries.svg)
+
+The dashed adapter is an optional experiment-specific integration point, not an
+existing trained connection between the language model and Micro-World.
+
 ## 3. Current repository structure
 
 ```text
@@ -104,7 +109,7 @@ micro-transformer/
 │   ├── reference/                 # Human-facing language reference
 │   ├── specifications/            # Architecture and formal specifications
 │   ├── results/                   # Curated experiment summaries
-│   └── concepts/                  # Visual references, not runtime assets
+│   └── concepts/                  # Documentation diagrams and rendered examples
 │
 └── artifacts/                     # Generated and normally git-ignored
     └── README.md                   # Runtime subdirectories are Git-ignored
@@ -263,7 +268,7 @@ Source, reference material, and generated output must remain distinct:
 | Language and dataset implementation | `micro-world/micro_transformer/data/` | Yes |
 | Language manual | `docs/reference/` | Yes |
 | Architecture specifications | `docs/specifications/` | Yes |
-| Visual concepts | `docs/concepts/` | Yes |
+| Documentation diagrams and rendered examples | `docs/concepts/` | Yes |
 | Dataset-generation code | `micro-world/micro_transformer/data/` | Yes |
 | Generated datasets | `artifacts/datasets/` | Normally no |
 | Model definitions | `models/` | Yes |

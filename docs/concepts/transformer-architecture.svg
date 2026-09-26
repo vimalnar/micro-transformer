@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1500" viewBox="0 0 1400 1500" role="img" aria-labelledby="title desc">
+  <title id="title">Micro-Transformer neural architecture</title>
+  <desc id="desc">The implemented decoder-only causal transformer: token and learned position embeddings, repeated pre-normalized attention and feed-forward residual sublayers, final normalization, and an output projection tied to the token embedding. The small v1 reference uses five blocks, width 128, four heads, and 128 output classes.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#344054"/></marker>
+    <style>
+      .title { font: 700 38px Arial, sans-serif; fill: #152238; }
+      .subtitle { font: 20px Arial, sans-serif; fill: #475467; }
+      .label { font: 700 22px Arial, sans-serif; fill: #182230; text-anchor: middle; }
+      .small { font: 17px Arial, sans-serif; fill: #344054; text-anchor: middle; }
+      .tiny { font: 15px Arial, sans-serif; fill: #475467; text-anchor: middle; }
+      .box { stroke: #344054; stroke-width: 2.5; rx: 16; }
+      .flow { fill: none; stroke: #344054; stroke-width: 3; marker-end: url(#arrow); }
+      .skip { fill: none; stroke: #667085; stroke-width: 2.5; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="1400" height="1500" fill="#ffffff"/>
+  <text class="title" x="700" y="58" text-anchor="middle">Micro-Transformer: decoder-only causal model</text>
+  <text class="subtitle" x="700" y="94" text-anchor="middle">Small v1 reference · 1,024,512 parameters · dropout 0.0</text>
+  <text class="small" x="700" y="140">Input token IDs [batch, time] · context ≤ 128</text>
+  <path class="flow" d="M700 153 V180"/>
+  <rect class="box" x="340" y="190" width="720" height="94" fill="#e9eefe"/>
+  <text class="label" x="700" y="226">Token embedding + learned absolute position embedding</text>
+  <text class="small" x="700" y="258">Input IDs: 128 vocabulary tokens + input-only padding ID · width 128</text>
+  <path class="flow" d="M700 284 V326"/>
+
+  <rect x="145" y="340" width="1110" height="755" rx="26" fill="#f8fafc" stroke="#98a2b3" stroke-width="3"/>
+  <text class="label" x="700" y="382">Transformer block × 5</text>
+  <text class="small" x="700" y="411">Each block applies the two pre-normalized residual sublayers below</text>
+
+  <rect class="box" x="470" y="438" width="460" height="62" fill="#fff2cc"/>
+  <text class="label" x="700" y="477">LayerNorm</text>
+  <path class="flow" d="M700 500 V530"/>
+  <rect class="box" x="320" y="540" width="700" height="126" fill="#ffe1c2"/>
+  <text class="label" x="670" y="578">Causal multi-head self-attention</text>
+  <text class="small" x="670" y="610">Q, K, V projections · 4 heads × 32 · causal mask</text>
+  <text class="small" x="670" y="640">Scaled dot-product attention · output projection</text>
+  <rect x="1038" y="555" width="190" height="96" rx="12" fill="#ffffff" stroke="#d0d5dd" stroke-width="2"/>
+  <text class="tiny" x="1133" y="581">LoRA can wrap</text>
+  <text class="tiny" x="1133" y="605">Q/V projections;</text>
+  <text class="tiny" x="1133" y="629">baseline disabled</text>
+  <path class="flow" d="M700 666 V698"/>
+  <rect class="box" x="500" y="708" width="400" height="60" fill="#fef0c7"/>
+  <text class="label" x="700" y="747">Residual addition</text>
+  <path class="skip" d="M435 469 H250 V738 H490"/>
+
+  <path class="flow" d="M700 768 V793"/>
+  <rect class="box" x="470" y="803" width="460" height="62" fill="#fff2cc"/>
+  <text class="label" x="700" y="842">LayerNorm</text>
+  <path class="flow" d="M700 865 V890"/>
+  <rect class="box" x="320" y="900" width="700" height="104" fill="#d9f2e6"/>
+  <text class="label" x="700" y="938">Feed-forward network</text>
+  <text class="small" x="700" y="972">Linear 128 → 512 · GELU · Linear 512 → 128</text>
+  <path class="flow" d="M700 1004 V1020"/>
+  <rect class="box" x="500" y="1030" width="400" height="52" fill="#fef0c7"/>
+  <text class="small" x="700" y="1062">Residual addition</text>
+  <path class="skip" d="M440 738 H265 V1056 H490"/>
+
+  <path class="flow" d="M700 1082 V1110"/>
+  <rect class="box" x="470" y="1120" width="460" height="62" fill="#fff2cc"/>
+  <text class="label" x="700" y="1159">Final LayerNorm</text>
+  <path class="flow" d="M700 1182 V1210"/>
+  <rect class="box" x="340" y="1220" width="720" height="86" fill="#e1eafe"/>
+  <text class="label" x="700" y="1257">Tied output projection · 128 token classes</text>
+  <text class="small" x="700" y="1287">Reuses token embedding weights; padding is not an output class</text>
+  <path class="flow" d="M700 1306 V1350"/>
+  <text class="label" x="700" y="1390">Next-token logits [batch, time, 128]</text>
+  <text class="small" x="700" y="1435">No encoder, cross-attention, interpreter, retrieval, or world-control policy</text>
+  <text class="tiny" x="700" y="1470">The larger preliminary configuration uses 8 blocks, width 320, 8 heads, and feed-forward width 1280.</text>
+</svg>
