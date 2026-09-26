@@ -11,6 +11,7 @@ online learning, or machine consciousness.
 
 ## Start here
 
+- [Documentation map](documentation-map.md)
 - [V1 quickstart](guides/v1-quickstart.md)
 - [Experiment guide](guides/experiment-guide.md)
 - [System architecture](specifications/system-architecture.md)

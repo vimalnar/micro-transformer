@@ -7,6 +7,7 @@ theme:
 
 nav:
   - Home: index.md
+  - Documentation map: documentation-map.md
   - Guides:
       - V1 quickstart: guides/v1-quickstart.md
       - Experiment guide: guides/experiment-guide.md
