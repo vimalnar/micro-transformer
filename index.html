@@ -3,23 +3,25 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Micro-Transformer is a small, inspectable transformer for learning by building, running controlled research, and testing early AI ideas." />
+    <meta name="description" content="A small independent research lab studying how AI systems work and how to make them more capable. Explore the Micro-Transformer toolkit and research into autonomy and Autonoetic Selfhood." />
     <meta name="theme-color" content="#f4f1e9" />
-    <title>Micro-Transformer — Small models. Clear questions.</title>
-    <link rel="stylesheet" href="styles.css?v=5" />
+    <title>Micro-Transformer Research Lab — Small models. Clear questions.</title>
+    <link rel="stylesheet" href="styles.css?v=10" />
     <script defer src="script.js"></script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
 
     <header class="site-header shell">
-      <a class="wordmark" href="./" aria-label="Micro-Transformer home">Micro-Transformer</a>
+      <a class="wordmark" href="./" aria-label="Micro-Transformer Research Lab home"><span>Micro-Transformer</span><span class="wordmark-subtitle">Research Lab</span></a>
       <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
         <span class="menu-icon" aria-hidden="true"></span>
         <span class="sr-only">Toggle navigation</span>
       </button>
       <nav class="site-nav" id="site-nav" aria-label="Primary navigation">
-        <a href="https://vimalnaran.substack.com" target="_blank" rel="noopener noreferrer">Substack</a>
+        <a href="#research">Research</a>
+        <a href="#toolkit">Toolkit</a>
+        <a href="#about">About</a>
         <a href="https://micro-transformer.readthedocs.io/en/latest/" target="_blank" rel="noopener noreferrer">Docs</a>
         <a href="https://github.com/vimalnar/micro-transformer" target="_blank" rel="noopener noreferrer">GitHub</a>
       </nav>
@@ -28,14 +30,15 @@
     <main id="main-content">
       <section class="hero shell" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <p class="eyebrow">Open source <span>/</span> Small models <span>/</span> Clear experiments</p>
-          <h1 id="hero-title">Learn by building. Research by testing.</h1>
-          <p class="hero-dek">An open, inspectable research toolkit built around a small transformer. Learn how the model works, run controlled experiments, and test narrow AI ideas locally.</p>
+          <p class="eyebrow">Independent research <span>/</span> AI systems</p>
+          <h1 id="hero-title">Small models.<br />Clear questions.</h1>
+          <p class="hero-dek">A small independent research lab studying how AI systems work and what it takes to make them more capable.</p>
+          <p class="hero-context">Micro-Transformer is both an open-source toolkit and an ongoing research project. Others can use the tools independently; the Lab uses them to develop and test new capabilities, with a longer-term direction towards much larger models, autonomy, and selfhood.</p>
           <div class="hero-actions">
-            <a class="button button-dark" href="https://micro-transformer.readthedocs.io/en/latest/guides/v1-quickstart/">Start with the quickstart <span aria-hidden="true">→</span></a>
-            <a class="button button-light" href="https://github.com/vimalnar/micro-transformer">Explore on GitHub <span aria-hidden="true">→</span></a>
+            <a class="button button-dark" href="#research">Explore the research <span aria-hidden="true">→</span></a>
+            <a class="button button-light" href="#toolkit">Use Micro-Transformer <span aria-hidden="true">→</span></a>
           </div>
-          <p class="hero-index">Learn <span>/</span> Study <span>/</span> Prototype <span>/</span> Evaluate</p>
+          <p class="hero-index">Build <span>/</span> Inspect <span>/</span> Test <span>/</span> Understand</p>
         </div>
 
         <div class="hero-visual" aria-label="Diagram showing tokens passing through attention and producing outputs">
@@ -106,39 +109,119 @@
         </div>
       </section>
 
-      <section class="what-is shell" id="about" aria-labelledby="what-is-title">
-        <div>
-          <p class="eyebrow">What it is</p>
-          <h2 id="what-is-title">A small system for learning and testing.</h2>
+      <section class="use-cases shell project-parts" aria-labelledby="parts-title">
+        <div class="use-cases-intro">
+          <div>
+            <p class="eyebrow">How the work fits together</p>
+            <h2 id="parts-title">One project. Three connected parts.</h2>
+          </div>
+          <p>The toolkit is available for others to use. The Lab’s own research builds on it. The wider programme takes those questions beyond the original model.</p>
         </div>
-        <div class="what-is-copy">
-          <p>Micro-Transformer is an open-source learning and R&amp;D suite built around a small, inspectable transformer—the neural-network architecture behind many modern language models.</p>
-          <p>It brings together a readable language specification, a small transformer, an experiment harness, and a separate Micro-World grid simulation. Hobbyists, academics, and product teams can use these pieces to build intuition, run controlled tests, and prototype narrow AI ideas locally before deciding whether a larger-scale experiment is justified.</p>
+        <div class="use-case-grid">
+          <article class="use-case">
+            <p class="use-case-label">01 <span>/</span> The open toolkit</p>
+            <h3>Tools for your research.</h3>
+            <p>The transformer model, language, datasets, gridworld, harness, guides, and documentation are available for independent experiments and extensions.</p>
+            <a class="text-link" href="#toolkit">Explore the toolkit <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="use-case">
+            <p class="use-case-label">02 <span>/</span> The research project</p>
+            <h3>A system to develop and test.</h3>
+            <p>The Lab uses Micro-Transformer to investigate existing capabilities, develop new ones, and test what each change contributes against controlled baselines.</p>
+            <a class="text-link" href="#research">Explore the research <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="use-case">
+            <p class="use-case-label">03 <span>/</span> The wider direction</p>
+            <h3>Larger models. Deeper questions.</h3>
+            <p>Extend the investigations to much larger models and explore autonomy, selfhood, and mechanisms that might support Autonoetic Selfhood.</p>
+            <a class="text-link" href="#about">Explore the direction <span aria-hidden="true">→</span></a>
+          </article>
         </div>
       </section>
 
-      <section class="cards shell" id="examples" aria-labelledby="examples-title">
-        <h2 class="sr-only" id="examples-title">Explore the suite</h2>
+      <section class="use-cases shell research" id="research" aria-labelledby="research-title">
+        <div class="use-cases-intro">
+          <div>
+            <p class="eyebrow">The Research Lab</p>
+            <h2 id="research-title">Questions worth testing.</h2>
+          </div>
+          <p>Within the Lab, Micro-Transformer is a system being investigated as well as a tool for investigation. The research develops, extends, and tests capabilities such as learning, memory, prediction, and coordination through controlled comparisons. Later work will investigate these mechanisms in much larger models and test whether the findings hold at scale.</p>
+        </div>
+        <p class="section-note">These questions describe the research direction. They are not claims of demonstrated capabilities.</p>
+        <div class="use-case-grid">
+          <article class="use-case">
+            <p class="use-case-label">01 <span>/</span> Understanding the model</p>
+            <h3>What has it learned?</h3>
+            <p>When a model gets an answer right, what supports that answer—and where does its apparent understanding break down?</p>
+            <ul>
+              <li>Use tasks with answers that can be checked independently.</li>
+              <li>Compare familiar examples with cases that require a different combination of known elements.</li>
+              <li>Inspect failures as closely as successful answers.</li>
+            </ul>
+            <p class="use-case-note">A correct prediction is a starting point for investigation.</p>
+          </article>
+          <article class="use-case">
+            <p class="use-case-label">02 <span>/</span> Building capability</p>
+            <h3>What makes a difference?</h3>
+            <p>What would memory, prediction, or coordination contribute to a system’s ability to carry out a defined task?</p>
+            <ul>
+              <li>Test a specific change against a matched baseline.</li>
+              <li>Separate the effect of a mechanism from extra computation or information.</li>
+              <li>Keep the task and success criteria fixed through the comparison.</li>
+            </ul>
+            <p class="use-case-note">Start with a question narrow enough to answer, then investigate whether the findings hold in larger models.</p>
+          </article>
+          <article class="use-case">
+            <p class="use-case-label">03 <span>/</span> Connecting mechanisms and minds</p>
+            <h3>What would count as evidence?</h3>
+            <p>How can ideas about cognition and machine minds lead to predictions that distinguish competing explanations?</p>
+            <ul>
+              <li>State what a proposed mechanism should change.</li>
+              <li>Consider simpler explanations for the same behaviour.</li>
+              <li>Distinguish task performance from evidence of a persistent, usable self-model.</li>
+            </ul>
+            <p class="use-case-note">This question guides the investigation of autonomy and Autonoetic Selfhood.</p>
+          </article>
+        </div>
+        <div class="iteration-note">
+          <span class="iteration-label">The working method</span>
+          <p>Ask a clear question. Make a controlled comparison. Record what happened and what remains unresolved. Use those findings to guide further research with larger models.</p>
+        </div>
+      </section>
+
+      <section class="what-is shell" id="toolkit" aria-labelledby="toolkit-title">
+        <div>
+          <p class="eyebrow">The Micro-Transformer toolkit</p>
+          <h2 id="toolkit-title">The tools behind the questions.</h2>
+        </div>
+        <div class="what-is-copy">
+          <p>The open-source toolkit makes the transformer model, formal language, data generation, Micro-World gridworld, harness, and documentation available for others to run their own research. Researchers, learners, and developers can use and extend these components independently of the Lab’s research programme.</p>
+          <p>The model, formal language, data generation, harness, and Micro-World grid simulation have separate responsibilities. Experiments can connect them through explicit adapters; the baseline transformer does not automatically act as an agent in the gridworld.</p>
+        </div>
+      </section>
+
+      <section class="cards shell toolkit-cards" aria-labelledby="components-title">
+        <h2 class="sr-only" id="components-title">Explore the toolkit components</h2>
         <article class="card">
           <div class="card-number">01 <span></span></div>
           <div class="card-body">
             <div>
-              <h3>Language</h3>
-              <p>Inspect the small, fixed formal language used by the model and its training data.</p>
-              <a href="https://micro-transformer.readthedocs.io/en/latest/reference/micro-transformer-language/">Explore the language <span aria-hidden="true">→</span></a>
+              <h3>Transformer</h3>
+              <p>A small causal transformer trained from scratch, with architecture and inference code you can inspect and change.</p>
+              <a href="https://github.com/vimalnar/micro-transformer/tree/main/models">Explore the model <span aria-hidden="true">→</span></a>
             </div>
-            <div class="card-sketch sketch-language" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="card-sketch sketch-chart" aria-hidden="true"><span class="chart-line blue"></span><span class="chart-line red"></span><span class="chart-line grey"></span></div>
           </div>
         </article>
         <article class="card">
           <div class="card-number">02 <span></span></div>
           <div class="card-body">
             <div>
-              <h3>Harness</h3>
-              <p>Try the bundled frozen checkpoint with example prompts and known failure cases.</p>
-              <a href="https://micro-transformer.readthedocs.io/en/latest/guides/harness/">Explore the harness <span aria-hidden="true">→</span></a>
+              <h3>Language &amp; data</h3>
+              <p>A readable formal language, reference interpreter, and procedural datasets with answers that can be checked.</p>
+              <a href="https://micro-transformer.readthedocs.io/en/latest/reference/micro-transformer-language/">Explore the language <span aria-hidden="true">→</span></a>
             </div>
-            <div class="card-sketch sketch-chart" aria-hidden="true"><span class="chart-line blue"></span><span class="chart-line red"></span><span class="chart-line grey"></span></div>
+            <div class="card-sketch sketch-language" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
           </div>
         </article>
         <article class="card">
@@ -146,79 +229,48 @@
           <div class="card-body">
             <div>
               <h3>Micro-World</h3>
-              <p>Inspect a separate grid simulation and its agent observations; connect a model through your own experiment adapter.</p>
+              <p>A separate gridworld with observations, actions, and replay. Connect a model through an adapter defined by your experiment.</p>
               <a href="https://micro-transformer.readthedocs.io/en/latest/guides/microworld-usage/">Explore Micro-World <span aria-hidden="true">→</span></a>
             </div>
             <div class="card-sketch sketch-world" aria-hidden="true"><span class="flag"></span><span class="dot"></span></div>
           </div>
         </article>
-      </section>
-
-      <section class="use-cases shell" id="use-cases" aria-labelledby="use-cases-title">
-        <div class="use-cases-intro">
-          <div>
-            <p class="eyebrow">Examples in practice</p>
-            <h2 id="use-cases-title">What Micro-Transformer can help you learn and decide.</h2>
+        <article class="card">
+          <div class="card-number">04 <span></span></div>
+          <div class="card-body">
+            <div>
+              <h3>Harness &amp; guides</h3>
+              <p>Run the frozen checkpoint, inspect example prompts and known failures, and follow the guides to build your own experiments.</p>
+              <a href="https://micro-transformer.readthedocs.io/en/latest/guides/harness/">Explore the harness <span aria-hidden="true">→</span></a>
+            </div>
+            <div class="card-sketch sketch-chart" aria-hidden="true"><span class="chart-line blue"></span><span class="chart-line grey"></span></div>
           </div>
-          <p>The benefit is a clearer next step: practical intuition for learners, more interpretable evidence for researchers, and less uncertainty about what deserves a larger product experiment.</p>
-        </div>
-
-        <div class="use-case-grid">
-          <article class="use-case">
-            <p class="use-case-label">01 <span>/</span> Learn transformers by experimenting</p>
-            <h3>For hobbyists</h3>
-            <p>Learn how transformers work by trying small experiments and seeing what changes in the model’s answers.</p>
-            <ul>
-              <li>Change an example or a model setting, then compare the prediction with what you expected.</li>
-              <li>Explore concepts like tokens, attention, and training in a small system you can inspect.</li>
-              <li>See both successful and surprising outputs—and use each as a clue about how the model behaves.</li>
-            </ul>
-            <p class="use-case-note">Small, hands-on experiments make transformer ideas visible—not just theoretical.</p>
-          </article>
-
-          <article class="use-case">
-            <p class="use-case-label">02 <span>/</span> Fast, traceable experiments</p>
-            <h3>For academics</h3>
-            <p>Run focused experiments on a tractable model, keeping the setup and outcomes clear enough to inspect, reproduce, and build on.</p>
-            <ul>
-              <li>Compare a defined change with a baseline to quickly find which hypotheses merit deeper study.</li>
-              <li>Keep methods, model and data versions, and outcomes traceable for follow-up studies and shared review.</li>
-              <li>Take promising questions to larger models and extend the investigation at greater scale.</li>
-            </ul>
-            <p class="use-case-note">A practical launchpad for reproducible research and follow-on studies at larger scale.</p>
-          </article>
-
-          <article class="use-case">
-            <p class="use-case-label">03 <span>/</span> Rapid AI iteration</p>
-            <h3>For product teams</h3>
-            <p>Explore a focused AI idea in a quick feedback loop: try a bounded task, inspect how the model responds, and refine the question before committing to a larger product experiment.</p>
-            <ul>
-              <li>See early where an idea works, where it breaks, and which inputs expose its limits.</li>
-              <li>Turn model behavior into concrete evidence that helps the team prioritize its next iteration.</li>
-              <li>Invest in broader evaluation or integration only when the small-scale results justify it.</li>
-            </ul>
-            <p class="use-case-note">A local testbed for model-output experiments—not a production integration, command executor, or action-safety system.</p>
-          </article>
-        </div>
-
-        <div class="iteration-note">
-          <span class="iteration-label">Fast iteration</span>
-          <p>Shorten the distance between an idea and useful evidence: build a small probe, run it repeatedly, learn from the failures, then scale only what still looks worth testing.</p>
-        </div>
+        </article>
       </section>
+      <div class="toolkit-links shell">
+        <a class="button button-dark" href="https://micro-transformer.readthedocs.io/en/latest/guides/v1-quickstart/">Start with the quickstart <span aria-hidden="true">→</span></a>
+        <a class="text-link" href="https://github.com/vimalnar/micro-transformer">View the source on GitHub <span aria-hidden="true">→</span></a>
+        <p>For learners, researchers, and developers who want a small system they can run locally, inspect, and extend.</p>
+      </div>
 
-      <section class="method shell" id="method" aria-labelledby="method-title">
+      <section class="method shell" id="about" aria-labelledby="about-title">
         <div>
-          <p class="eyebrow">The working principle</p>
-          <h2 id="method-title">Start small enough to learn from.</h2>
+          <p class="eyebrow">About the Research Lab</p>
+          <h2 id="about-title">Small enough to inspect. Built to investigate.</h2>
         </div>
-        <p>For hobbyists, it is a hands-on way to learn by building. For academics, it is a controlled testbed for clear questions and reproducible experiments. For companies, it is a low-cost proving ground for ideas worth testing before larger investment—while keeping the iteration loop short and inspectable.</p>
+        <div class="section-copy">
+          <p>Micro-Transformer Research Lab is a small independent lab with three connected parts: an open toolkit for others to use, an ongoing research project developing and testing capabilities in Micro-Transformer, and a wider investigation into larger models, autonomy, and selfhood.</p>
+          <p>The approach starts with systems small enough to inspect, change, and test, then scales to much larger models for further research. Findings from small systems guide those investigations; whether they hold at scale must be tested.</p>
+          <p>The longer-term research explores Autonoetic Selfhood: how a system might connect memories of its past, its present state, and possible futures to an ongoing model of itself. The Lab investigates what memory, prediction, self-modelling, and autonomy could contribute. This remains a research aim; fluent self-descriptions alone are insufficient evidence.</p>
+          <p>Essays and commentary develop and question the ideas behind the work. These are distinct from experiment reports, which document methods, observations, limitations, and alternative explanations.</p>
+          <a class="text-link" href="https://vimalnaran.substack.com" target="_blank" rel="noopener noreferrer">Read on Substack <span aria-hidden="true">→</span></a>
+        </div>
       </section>
     </main>
 
     <footer class="site-footer shell">
-      <span>Small transformers. Clearer experiments.</span>
-      <span>© <span id="year"></span> Micro-Transformer</span>
+      <span>Small models. Clear questions.</span>
+      <span>© <span id="year"></span> Micro-Transformer Research Lab</span>
     </footer>
   </body>
 </html>
