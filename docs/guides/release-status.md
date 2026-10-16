@@ -30,6 +30,14 @@ The configuration and evidence are under [baselines/v1.0.0-large](https://github
 That directory's README, model card, manifest and data-binding file are the
 authoritative details for artifact availability.
 
+## Historical, shelved experiments
+
+Agent and living-world development shelved on 15 September 2026 is retained as
+historical work. Its local reports are not a current supported feature, a release,
+or evidence that the bundled language model is a trained world controller. See
+[historical experiments](../results/historical-experiments.md) for the provenance
+boundary and external report location.
+
 ## New experiments
 
 An experiment configuration is not a release. Identify any new checkpoint by its

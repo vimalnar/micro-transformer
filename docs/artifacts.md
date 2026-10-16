@@ -20,6 +20,10 @@ are normally generated under the ignored `artifacts/` directory. The
 [artifact-directory README](https://github.com/vimalnar/micro-transformer/blob/main/artifacts/README.md)
 explains that local output area.
 
+Reports may also be retained in [external artifact storage](guides/reproducibility.md#external-artifact-storage).
+The retained [historical agent and living-world experiments](results/historical-experiments.md)
+are shelved work, separate from the current supported baseline.
+
 | Element | Purpose | Representative artifacts | Start here |
 | --- | --- | --- | --- |
 | Language and semantics | Define exactly what token sequences mean | Ordered 128-token vocabulary, grammar, interpreter, invalid-input rules | [Language reference](reference/micro-transformer-language.md) |

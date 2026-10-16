@@ -7,22 +7,38 @@ challenge/shortcut evaluation, and public artifact release are still pending.
 
 ## Choose a path
 
-### Hobbyist or student: inspect and change a complete model
+### Hobbyist or student: run the bundled model
 
-1. Install the training requirements.
-2. Run the integrated harness self-test.
-3. Generate a small dataset.
-4. Train a small run or copy `models/transformer.py` and change one component.
-5. Compare the resulting report with the baseline and retain failures.
+From the repository root, create an environment, install the pinned training
+dependencies and the local package, then check the bundled frozen checkpoint:
 
 ```bash
 python3.12 -m venv .venv-training
 .venv-training/bin/python -m pip install -r training/requirements.txt
+.venv-training/bin/python -m pip install -e . --no-deps
 .venv-training/bin/python harness/talk_to_micro_transformer.py --self-test
 ```
 
-The complete generate, prepare, train, reload, and evaluate path can be checked
-without a long training run:
+Start an interactive session with the same checkpoint:
+
+```bash
+.venv-training/bin/python harness/talk_to_micro_transformer.py
+```
+
+Enter a prompt using the fixed vocabulary, for example:
+
+```text
+hal move flag six to river. hal tell gia flag six at river. where gia knows flag six?
+```
+
+The model should complete `river |` for this named example. Its response is a
+model prediction, not an answer supplied by the reference interpreter. The
+harness's `:examples` and `:limitations` commands show verified examples and
+known failures.
+
+To generate a dataset and train a new model, continue with the
+[training and inference guide](training-and-inference.md). For a faster check of
+the complete generate, prepare, train, reload and evaluate path, run:
 
 ```bash
 .venv-training/bin/python scripts/verify_v1_suite.py --full

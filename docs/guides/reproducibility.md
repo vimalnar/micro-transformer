@@ -20,6 +20,32 @@ Keep generated files under `artifacts/`; that directory is ignored by Git. Prese
 manifests and reports in the durable experiment record used for the work rather
 than committing large transient outputs by default.
 
+## External artifact storage
+
+Generated reports can be retained outside the checkout. In the maintainer's
+current local layout, the relocated report directory is:
+
+```text
+/Volumes/EVERYTHING BACKUP/Development/micro-transformer/artifacts/reports/
+```
+
+This path is local to the maintainer's mounted external volume; it is not a public
+artifact download or a required installation location. A fresh clone does not
+include these ignored reports. The normal output convention remains
+`artifacts/reports/` relative to the checkout, so existing commands may still
+write there unless their documented output option specifies another location.
+
+When inspecting a relocated report, locate its run directory under the external
+root and use its manifest to identify the checkpoint, source, data and controls.
+Recorded absolute paths may refer to the original checkout. Record the old-to-new
+path mapping separately and verify content hashes before claiming reproduction;
+do not rewrite original manifests merely to make old paths resolve. Mounting or
+moving a directory does not establish artifact completeness or scientific validity.
+
+Some retained reports belong to [historical, shelved experiments](../results/historical-experiments.md)
+whose implementation is absent from the current baseline. Keep their source and
+evaluation identities separate from current suite results.
+
 ## Separate result states
 
 The fact that a command completed does not establish that the protocol was followed
