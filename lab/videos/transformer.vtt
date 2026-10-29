@@ -1,0 +1,77 @@
+WEBVTT
+
+1
+00:00:00.350 --> 00:00:03.115
+Model shows the architecture behind each showcase.
+
+2
+00:00:03.115 --> 00:00:08.250
+In this release, it is read-only: there is nothing to drag, remove or
+
+3
+00:00:08.250 --> 00:00:08.645
+resize.
+
+4
+00:00:08.645 --> 00:00:12.595
+You can still select Ava's blocks to understand their roles.
+
+5
+00:00:12.595 --> 00:00:16.150
+Training changes the learned numbers inside this fixed structure.
+
+6
+00:00:17.350 --> 00:00:20.904
+Follow Ava's diagram from input to output.
+
+7
+00:00:20.904 --> 00:00:23.443
+Map information becomes numerical representations.
+
+8
+00:00:23.443 --> 00:00:29.537
+The processing stages transform those representations, then the model scores possible moves.
+
+9
+00:00:29.537 --> 00:00:35.122
+Blocks marked as architectural extensions add mechanisms beyond the Python baseline.
+
+10
+00:00:35.122 --> 00:00:40.200
+Their names don't guarantee that a behaviour has been learned.
+
+11
+00:00:41.400 --> 00:00:44.825
+Chatbot uses the original five-layer language architecture.
+
+12
+00:00:44.825 --> 00:00:50.696
+Attention combines available information, and a small network refines each token's representation.
+
+13
+00:00:50.696 --> 00:00:53.632
+The output scores possible next tokens.
+
+14
+00:00:53.632 --> 00:00:56.568
+Repeating that prediction produces an answer.
+
+15
+00:00:56.568 --> 00:01:01.950
+Device messaging uses the same architecture with its own saved learning.
+
+16
+00:01:03.150 --> 00:01:07.022
+The language architecture has just over one million trainable weights.
+
+17
+00:01:07.022 --> 00:01:12.056
+Training adjusts those weights using your examples; it doesn't add words or layers.
+
+18
+00:01:12.056 --> 00:01:15.928
+In Playground, those weights stay fixed while the model predicts.
+
+19
+00:01:15.928 --> 00:01:19.800
+That distinction lets you explore learning without rebuilding the machinery.

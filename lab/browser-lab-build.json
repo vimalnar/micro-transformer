@@ -1,0 +1,8 @@
+{
+  "application": "micro-transformer-browser-lab",
+  "version": "0.10.0-demo.1",
+  "base": "/lab/",
+  "builtAt": "2026-10-29T22:56:29.415Z",
+  "languageWeightsSha256": "23b7dae0d5cf1ba2354f771f704b3fb35365878facd32602457fd92c4eece756",
+  "avaCheckpointSha256": "8bbcac2e4bd756e87a6e7de63c0628c45c3d013a591a95e233a592e2966e0f3b"
+}

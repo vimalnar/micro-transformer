@@ -1,0 +1,218 @@
+WEBVTT
+
+00:00:00.400 --> 00:00:03.853
+You don't need to know any maths to follow this.
+
+00:00:03.853 --> 00:00:07.651
+A computer model is a system that learns patterns from examples.
+
+00:00:07.651 --> 00:00:10.758
+A transformer is one way of building that system.
+
+00:00:10.758 --> 00:00:14.211
+It can help with writing, translation and many other tasks.
+
+00:00:14.211 --> 00:00:18.700
+In this lab, we use a tiny one to choose Ava's next move.
+
+00:00:20.000 --> 00:00:23.975
+Let's use a simple example: the cat sat on the ...
+
+00:00:23.975 --> 00:00:25.420
+What might come next?
+
+00:00:25.420 --> 00:00:26.865
+Mat is one possibility.
+
+00:00:26.865 --> 00:00:33.008
+A text-generating transformer learns to predict the next small piece of text from the pieces before it.
+
+00:00:33.008 --> 00:00:36.982
+Repeating that process can produce a sentence, then a whole answer.
+
+00:00:36.982 --> 00:00:39.150
+It can also produce something wrong.
+
+00:00:40.450 --> 00:00:45.859
+Before the model can work, the input is broken into small pieces called tokens.
+
+00:00:45.859 --> 00:00:48.177
+Think of them as labelled tiles.
+
+00:00:48.177 --> 00:00:51.655
+We show whole words here to keep things clear.
+
+00:00:51.655 --> 00:00:55.905
+Real text tokens can also be parts of words or punctuation.
+
+00:00:55.905 --> 00:01:01.700
+The model works with these pieces, rather than seeing a sentence the way you do.
+
+00:01:03.000 --> 00:01:04.283
+Computers calculate with numbers.
+
+00:01:04.283 --> 00:01:07.811
+So each token gets a pattern of numbers, called an embedding.
+
+00:01:07.811 --> 00:01:11.019
+Imagine a little set of sliders attached to each tile.
+
+00:01:11.019 --> 00:01:12.302
+Training adjusts those numbers.
+
+00:01:12.302 --> 00:01:16.151
+They help the model work with patterns in how pieces are used.
+
+00:01:16.151 --> 00:01:20.000
+The sliders in this picture are illustrations, not measurements from a model.
+
+00:01:21.300 --> 00:01:22.029
+Order matters.
+
+00:01:22.029 --> 00:01:26.768
+The dog chased the cat is different from the cat chased the dog.
+
+00:01:26.768 --> 00:01:28.591
+The pieces alone aren't enough.
+
+00:01:28.591 --> 00:01:31.872
+The model also receives information about each piece's position.
+
+00:01:31.872 --> 00:01:37.340
+In our tiny transformer, a learned position pattern is added to the token's number pattern.
+
+00:01:37.340 --> 00:01:41.350
+Now it has information about both the piece and its place.
+
+00:01:42.650 --> 00:01:43.687
+Next comes attention.
+
+00:01:43.687 --> 00:01:48.872
+For each piece, the model calculates how much information to take from other available pieces.
+
+00:01:48.872 --> 00:01:52.675
+In our sentence, earlier words can help with what comes next.
+
+00:01:52.675 --> 00:01:57.169
+The connections depend on the input and what training has taught the model.
+
+00:01:57.169 --> 00:02:02.700
+For this kind of text generation, it can't peek at words that haven't been supplied yet.
+
+00:02:04.000 --> 00:02:09.920
+Several attention heads let the model form different mixtures of information at the same time.
+
+00:02:09.920 --> 00:02:13.077
+Think of several highlighters over the same sentence.
+
+00:02:13.077 --> 00:02:15.445
+Each can highlight a different pattern.
+
+00:02:15.445 --> 00:02:19.786
+We don't give one a permanent job, like grammar or walls.
+
+00:02:19.786 --> 00:02:22.154
+Their patterns are learned, then combined.
+
+00:02:22.154 --> 00:02:26.100
+These coloured connections are teaching pictures, not recorded attention scores.
+
+00:02:27.450 --> 00:02:31.392
+After attention, another small network changes each piece's number pattern.
+
+00:02:31.392 --> 00:02:34.152
+Its technical name is a feed-forward network.
+
+00:02:34.152 --> 00:02:38.094
+Think of it as refining the information attention has gathered.
+
+00:02:38.094 --> 00:02:42.431
+It works on each piece separately, using the same learned calculation.
+
+00:02:42.431 --> 00:02:44.796
+It doesn't contain a hand-written answer.
+
+00:02:44.796 --> 00:02:47.950
+Its settings and internal numbers affect the transformation.
+
+00:02:49.250 --> 00:02:52.961
+Attention and refinement sit inside a transformer layer.
+
+00:02:52.961 --> 00:02:59.456
+Side connections carry earlier information forward, and balancing steps help keep the numbers manageable.
+
+00:02:59.456 --> 00:03:04.094
+Several layers repeat this processing, using their own learned settings.
+
+00:03:04.094 --> 00:03:07.342
+Later layers receive the earlier layers' results.
+
+00:03:07.342 --> 00:03:14.300
+More layers mean more computation and more to learn, but they don't guarantee better answers.
+
+00:03:15.600 --> 00:03:21.238
+At the end, the model turns the processed information into scores for possible next tokens.
+
+00:03:21.238 --> 00:03:26.501
+A text system can select one, add it to the input, and predict again.
+
+00:03:26.501 --> 00:03:28.756
+Different systems use different selection rules.
+
+00:03:28.756 --> 00:03:31.388
+Even a strong preference can be wrong.
+
+00:03:31.388 --> 00:03:36.650
+These example words illustrate the process; they aren't results from a trained language model.
+
+1
+00:03:37.900 --> 00:03:39.685
+The architecture is the machinery.
+
+2
+00:03:39.685 --> 00:03:44.326
+Training adjusts its internal numbers, called weights, using examples and a measure of
+
+3
+00:03:44.326 --> 00:03:44.683
+error.
+
+4
+00:03:44.683 --> 00:03:48.253
+Using those weights to make a prediction is called inference.
+
+5
+00:03:48.253 --> 00:03:51.823
+In this lab, Model lets you inspect a fixed architecture.
+
+6
+00:03:51.823 --> 00:03:53.251
+Training changes its weights.
+
+7
+00:03:53.251 --> 00:03:55.750
+Playground uses them without teaching the model.
+
+8
+00:03:57.100 --> 00:04:00.315
+Ava turns world information into predictions of moves.
+
+9
+00:04:00.315 --> 00:04:03.531
+Chatbot turns a short story into an answer.
+
+10
+00:04:03.531 --> 00:04:07.550
+Device messaging turns a simulated event history into a report.
+
+11
+00:04:07.550 --> 00:04:10.363
+They are different applications of learned prediction.
+
+12
+00:04:10.363 --> 00:04:15.588
+Start in any Playground, change its practice in Training, then test what happened.
+
+13
+00:04:15.588 --> 00:04:18.000
+The model can still make mistakes.

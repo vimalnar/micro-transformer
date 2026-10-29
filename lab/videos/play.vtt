@@ -1,0 +1,137 @@
+WEBVTT
+
+1
+00:00:00.350 --> 00:00:02.296
+Each showcase opens in Playground.
+
+2
+00:00:02.296 --> 00:00:06.966
+You can try a supplied trained model immediately, without waiting for training.
+
+3
+00:00:06.966 --> 00:00:12.026
+These are three different jobs: choosing a move, answering a story question, and
+
+4
+00:00:12.026 --> 00:00:14.750
+reporting what a receiver has been told.
+
+5
+00:00:15.950 --> 00:00:21.381
+For Ava, use Watch Ava for a journey or One move for a
+
+6
+00:00:21.381 --> 00:00:22.217
+single decision.
+
+7
+00:00:22.217 --> 00:00:25.977
+The model selects actions; a teacher doesn't correct them.
+
+8
+00:00:25.977 --> 00:00:31.408
+This saved model reaches the lamp in fifteen moves in its practice room.
+
+9
+00:00:31.408 --> 00:00:34.750
+One successful journey doesn't establish reliable navigation everywhere.
+
+10
+00:00:35.950 --> 00:00:38.050
+For Chatbot, start with an example.
+
+11
+00:00:38.050 --> 00:00:42.250
+This story asks who has the ball, and the model answers Cy.
+
+12
+00:00:42.250 --> 00:00:46.800
+Each request is independent, so include the necessary facts in the same input.
+
+13
+00:00:46.800 --> 00:00:50.650
+Use the language guide when changing a name, object or place.
+
+14
+00:00:51.850 --> 00:00:54.159
+The colour example exposes a mistake.
+
+15
+00:00:54.159 --> 00:00:58.391
+The last paint action says blue, but this model answers unknown.
+
+16
+00:00:58.391 --> 00:01:01.854
+That is a real prediction, not a programmed refusal.
+
+17
+00:01:01.854 --> 00:01:06.857
+Use the failure to decide what practice to add, then train and ask
+
+18
+00:01:06.857 --> 00:01:07.241
+again.
+
+19
+00:01:07.241 --> 00:01:09.550
+Extra practice doesn't guarantee a fix.
+
+20
+00:01:10.750 --> 00:01:15.740
+For Device messaging, choose an asset location, leave delivery checked, and send the
+
+21
+00:01:15.740 --> 00:01:16.124
+event.
+
+22
+00:01:16.124 --> 00:01:18.426
+The model interprets the message history.
+
+23
+00:01:18.426 --> 00:01:21.881
+With the river update delivered, its report is river.
+
+24
+00:01:21.881 --> 00:01:23.800
+No physical hardware is connected.
+
+25
+00:01:25.000 --> 00:01:27.559
+Now choose dock and turn delivery off.
+
+26
+00:01:27.559 --> 00:01:31.214
+The simulated asset moves, but the hub hasn't been told.
+
+27
+00:01:31.214 --> 00:01:33.042
+The model still reports river.
+
+28
+00:01:33.042 --> 00:01:34.870
+That distinction is the challenge.
+
+29
+00:01:34.870 --> 00:01:39.622
+Clear the stream to start a new case; use Training if you want
+
+30
+00:01:39.622 --> 00:01:41.450
+to change the model's practice.
+
+31
+00:01:42.650 --> 00:01:47.150
+After training, return here and try the same input, then a variation.
+
+32
+00:01:47.150 --> 00:01:51.275
+Playing doesn't teach the model, and more practice isn't automatically better.
+
+33
+00:01:51.275 --> 00:01:56.150
+Look for where its predictions hold up, where they change, and where they
+
+34
+00:01:56.150 --> 00:01:56.900
+still fail.

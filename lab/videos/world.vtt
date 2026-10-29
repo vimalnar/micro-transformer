@@ -1,0 +1,89 @@
+WEBVTT
+
+1
+00:00:00.350 --> 00:00:03.101
+Open Ava's Playground, then choose Edit world.
+
+2
+00:00:03.101 --> 00:00:08.211
+The editor sits below the journey, so you can change the challenge and
+
+3
+00:00:08.211 --> 00:00:09.783
+return to watching Ava.
+
+4
+00:00:09.783 --> 00:00:14.500
+This example uses the supplied trained model and its small saved room.
+
+5
+00:00:15.700 --> 00:00:20.173
+Choose Toggle walls, then click an empty square to add a wall.
+
+6
+00:00:20.173 --> 00:00:22.782
+Click that wall again to remove it.
+
+7
+00:00:22.782 --> 00:00:27.627
+You are changing the problem Ava faces, not writing the moves that solve
+
+8
+00:00:27.627 --> 00:00:28.000
+it.
+
+9
+00:00:29.200 --> 00:00:33.106
+Choose Lamp, then click a clear square to move the destination.
+
+10
+00:00:33.106 --> 00:00:35.592
+The Ava tool moves her starting place.
+
+11
+00:00:35.592 --> 00:00:40.209
+The route message checks whether a journey is possible under the world rules.
+
+12
+00:00:40.209 --> 00:00:43.050
+It doesn't prove the model can find it.
+
+13
+00:00:44.250 --> 00:00:47.099
+Compatible layout edits keep the learned weights.
+
+14
+00:00:47.099 --> 00:00:52.390
+Try the changed world before retraining, so you can see what the model
+
+15
+00:00:52.390 --> 00:00:53.203
+already handles.
+
+16
+00:00:53.203 --> 00:00:56.866
+Larger sixteen-by-sixteen worlds also support coloured keys and doors.
+
+17
+00:00:56.866 --> 00:01:01.750
+Expanding an old small room changes its input format and requires retraining.
+
+18
+00:01:02.950 --> 00:01:07.517
+If you want Ava to learn navigation for a challenge, open Training and
+
+19
+00:01:07.517 --> 00:01:08.571
+choose useful practice.
+
+20
+00:01:08.571 --> 00:01:13.137
+Read the reset message before changing her practice choices: those changes start her
+
+21
+00:01:13.137 --> 00:01:13.840
+learning afresh.
+
+22
+00:01:13.840 --> 00:01:16.650
+Training and editing the room are separate actions.

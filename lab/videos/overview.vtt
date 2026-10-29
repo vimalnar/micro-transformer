@@ -1,0 +1,97 @@
+WEBVTT
+
+1
+00:00:00.350 --> 00:00:01.467
+Welcome to Micro-Transformer.
+
+2
+00:00:01.467 --> 00:00:05.936
+These three showcases let you try small, real models doing different jobs.
+
+3
+00:00:05.936 --> 00:00:10.778
+Start with a result, then explore what the model learned and how it
+
+4
+00:00:10.778 --> 00:00:11.150
+works.
+
+5
+00:00:12.350 --> 00:00:16.807
+In Ava's world, a trained model chooses how she moves towards the lamp.
+
+6
+00:00:16.807 --> 00:00:19.893
+You can change the room and watch what happens.
+
+7
+00:00:19.893 --> 00:00:24.350
+This recorded journey succeeds, but a different challenge can still leave her stuck.
+
+8
+00:00:28.850 --> 00:00:33.507
+The Chatbot follows facts in short stories and generates an answer.
+
+9
+00:00:33.507 --> 00:00:36.047
+It uses Micro-Transformer's small, fixed language.
+
+10
+00:00:36.047 --> 00:00:41.550
+Try the examples, change a detail, and see whether the model keeps track.
+
+11
+00:00:42.750 --> 00:00:47.686
+Device messaging separates where an asset actually is from what its receiving hub
+
+12
+00:00:47.686 --> 00:00:48.825
+has been told.
+
+13
+00:00:48.825 --> 00:00:51.863
+Withhold an update and inspect the model's report.
+
+14
+00:00:51.863 --> 00:00:54.900
+The devices are simulated; the prediction is real.
+
+15
+00:00:56.100 --> 00:00:58.654
+Training lets you change the practice.
+
+16
+00:00:58.654 --> 00:01:01.634
+Editing examples alone doesn't teach the model.
+
+17
+00:01:01.634 --> 00:01:07.168
+Click Train to update its learned weights, then return to Playground to test
+
+18
+00:01:07.168 --> 00:01:08.019
+the result.
+
+19
+00:01:08.019 --> 00:01:11.850
+Extra practice can help some answers and hurt others.
+
+20
+00:01:13.050 --> 00:01:16.103
+Model is the optional look under the hood.
+
+21
+00:01:16.103 --> 00:01:18.774
+Inspect the structure that produces the predictions.
+
+22
+00:01:18.774 --> 00:01:21.445
+Its architecture is read-only in this release.
+
+23
+00:01:21.445 --> 00:01:26.405
+Each showcase keeps its own learned version, and everything you try here runs
+
+24
+00:01:26.405 --> 00:01:27.550
+on your device.

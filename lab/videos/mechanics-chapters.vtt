@@ -1,0 +1,49 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:19.600
+What is a transformer?
+
+2
+00:00:19.600 --> 00:00:40.050
+Start with one small job.
+
+3
+00:00:40.050 --> 00:01:02.600
+Break the input into pieces.
+
+4
+00:01:02.600 --> 00:01:20.900
+Give each piece a number pattern.
+
+5
+00:01:20.900 --> 00:01:42.250
+Keep track of the order.
+
+6
+00:01:42.250 --> 00:02:03.600
+Connect the useful pieces.
+
+7
+00:02:03.600 --> 00:02:27.050
+Try several attention patterns.
+
+8
+00:02:27.050 --> 00:02:48.850
+Refine what each piece represents.
+
+9
+00:02:48.850 --> 00:03:15.200
+Repeat the processing in layers.
+
+10
+00:03:15.200 --> 00:03:37.550
+Turn the result into a prediction.
+
+11
+00:03:37.550 --> 00:03:56.750
+Structure, learning and prediction
+
+12
+00:03:56.750 --> 00:04:18.950
+Three ways to see the same idea

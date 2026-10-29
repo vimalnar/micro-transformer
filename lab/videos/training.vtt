@@ -1,0 +1,117 @@
+WEBVTT
+
+1
+00:00:00.350 --> 00:00:03.914
+Training is where you choose what the model practises.
+
+2
+00:00:03.914 --> 00:00:05.893
+For Ava, select navigation situations.
+
+3
+00:00:05.893 --> 00:00:11.041
+For Chatbot and Device messaging, edit stories or event sequences with expected answers.
+
+4
+00:00:11.041 --> 00:00:15.000
+Match the practice to the behaviour you want to explore.
+
+5
+00:00:16.200 --> 00:00:21.368
+In the language showcases, each line contains an input and a teaching answer.
+
+6
+00:00:21.368 --> 00:00:25.740
+Use the vocabulary the model supports, and check your labels carefully.
+
+7
+00:00:25.740 --> 00:00:29.715
+The practice-edited message means Playground still uses the current weights.
+
+8
+00:00:29.715 --> 00:00:32.100
+Nothing is learned until training runs.
+
+9
+00:00:33.300 --> 00:00:35.078
+Here are two device examples.
+
+10
+00:00:35.078 --> 00:00:36.856
+One delivers a river update.
+
+11
+00:00:36.856 --> 00:00:41.478
+The other then moves the asset to the dock without telling the hub.
+
+12
+00:00:41.478 --> 00:00:45.389
+Both teaching answers are river, because that's the last delivered location.
+
+13
+00:00:45.389 --> 00:00:49.300
+These labels are used for training, not supplied with Playground questions.
+
+14
+00:00:50.500 --> 00:00:53.662
+Use the training button to begin a run.
+
+15
+00:00:53.662 --> 00:00:58.009
+This recording shows two real weight updates on the loaded model.
+
+16
+00:00:58.009 --> 00:01:01.565
+The displayed error measures agreement with those teaching answers.
+
+17
+00:01:01.565 --> 00:01:06.308
+A lower practice error is not proof of success on unfamiliar messages.
+
+18
+00:01:06.308 --> 00:01:11.050
+Short pauses in this video leave time to explain the recorded result.
+
+19
+00:01:12.250 --> 00:01:17.090
+Ava's practice choices reset her learned weights immediately, as the message says.
+
+20
+00:01:17.090 --> 00:01:21.123
+Chatbot and Device messaging add practice to their current weights.
+
+21
+00:01:21.123 --> 00:01:22.737
+Each showcase saves separately.
+
+22
+00:01:22.737 --> 00:01:27.980
+Read these messages before experimenting, and change one thing at a time so
+
+23
+00:01:27.980 --> 00:01:30.400
+the outcome is easier to understand.
+
+24
+00:01:31.600 --> 00:01:33.928
+Choose Try this model in Playground.
+
+25
+00:01:33.928 --> 00:01:38.972
+For devices, Try same messages again reuses the existing stream without adding an
+
+26
+00:01:38.972 --> 00:01:39.360
+event.
+
+27
+00:01:39.360 --> 00:01:42.076
+Here the updated model still reports river.
+
+28
+00:01:42.076 --> 00:01:45.956
+That checks this case; it doesn't show a general improvement.
+
+29
+00:01:45.956 --> 00:01:51.000
+Try a changed example too, and keep both successes and mistakes in view.
