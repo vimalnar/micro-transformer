@@ -42,6 +42,22 @@ grid simulation owns interactive world truth. See the
 [system architecture](docs/specifications/system-architecture.md) for the exact
 component boundaries.
 
+## See what you can build
+
+The [Micro-Transformer Showcase](https://github.com/vimalnar/micro-transformer-showcase)
+contains three runnable Python/PyTorch applications: Ava choosing actions in a
+small world, a chatbot answering controlled-language story questions, and simulated
+devices interpreting delivered or withheld messages. Try supplied trained weights,
+edit the practice, and observe what real gradient-based training changes, including
+the model's mistakes. The interface runs locally; the Python implementation is
+available to inspect and modify.
+
+Start with the [developer guide and runnable Python examples](https://github.com/vimalnar/micro-transformer-showcase/blob/main/docs/building-with-micro-transformer.md)
+to follow toolkit inference, application training, checkpoint restoration and
+Playground use of the same learned weights. The guide separates toolkit components
+from application code and explains the architecture and world extensions Ava adds.
+The showcase uses a pinned toolkit revision and documents its checkpoint provenance.
+
 ## Repository guide
 
 ```text
